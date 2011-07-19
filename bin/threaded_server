@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
+if ARGV.empty?
+  port = 8000
+elsif ARGV[0] =~ /^\d+$/
+  port = ARGV[0]
+else
+  puts "Invalid port number: #{ARGV[0]}"
+  exit
+end
+
+require 'threaded_server'
+
+server = ThreadedServer::Server.new(STDOUT)
+server.start 'localhost', port

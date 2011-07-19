@@ -1,0 +1,2 @@
+default: --profile doc_report
+doc_report: --color --format progress
