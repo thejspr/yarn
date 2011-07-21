@@ -1,28 +1,29 @@
 require "threaded_server/version"
+require "threaded_server/logger"
 
 require 'socket'
-require 'http_parser'
 
 module ThreadedServer
   class Server
 
-    attr_accessor :host, :port, :socket
+    include Logger
 
-    def initialize(output,test=false)
+    attr_accessor :host, :port, :socket, :output
+
+    def initialize(output)
       @output = output
     end
 
     def start(host='localhost',port=8000)
       begin
-        @host, @post = host, port
-        @socket = TCPServer.new(host, port)
+        @host, @port = host, port
+        @socket = TCPServer.new(@host, @port)
 
-        @output.puts "Server started on port #{port}"
+        log "Server started on port #{port}"
 
         start_request_listener
       rescue Exception => e
-        @output.puts "An error occured starting ThreadedServer: #{e.message}"
-        exit
+        log "An error occured starting ThreadedServer: #{e.message}"
       end
     end
 
@@ -30,15 +31,37 @@ module ThreadedServer
       @socket.close unless @socket.nil?
       @socket = nil
 
-      @output.puts "Server stopped"
+      log "Server stopped"
     end
 
     def start_request_listener
       while( session = @socket.accept ) do
-        puts session.gets
-        session.puts HTTPParser.parse_request(session.gets) 
-        session.close
+        log session.gets
+        write_response(session,nil,[],"Success!")
       end
+    end
+
+    def write_response(session,status,headers,body)
+      write_status session, status
+      write_headers session, headers
+      write_body session, body
+      
+      session.close
+    end
+
+    def write_status(session,status)
+      session.puts "HTTP/1.1 200 OK"
+    end
+
+    def write_headers(session,headers)
+      headers.each do |header|
+        session.puts header + "\r\n"
+      end
+    end
+
+    def write_body(session,body)
+      session.puts "\r\n"
+      session.puts body
     end
 
   end

@@ -1,3 +1,5 @@
+include Helpers
+
 class Output
   def messages
     @messages ||= []
@@ -14,7 +16,7 @@ end
 
 When /^I start the server on port (\d+)$/ do |port|
   @server = ThreadedServer::Server.new(output)
-  @server.start port
+  start_server('localhost',port)
 end
 
 Then /^I should see "([^"]*)"$/ do |message|
@@ -22,16 +24,16 @@ Then /^I should see "([^"]*)"$/ do |message|
 end
 
 When /^I stop the server$/ do
-  @server.stop unless @server.nil?
+  stop_server unless @server.nil?
 end
 
 Given /^the server is running$/ do
   @server = ThreadedServer::Server.new(output)
-  @server.start
+  start_server
 end
 
 Given /^the server is not running$/ do
-  @server.stop unless @server.nil?
+  stop_server unless @server.nil?
   @server = nil
 end
 

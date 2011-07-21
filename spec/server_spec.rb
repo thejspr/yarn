@@ -5,7 +5,7 @@ module ThreadedServer
 
     before(:each) do
       @output = double('output').as_null_object
-      @server = Server.new(@output,true)
+      @server = Server.new(@output)
     end 
 
     after(:each) do
@@ -30,7 +30,6 @@ module ThreadedServer
 
       it "calls the start_request_listener method" do
         @server.should_receive(:start_request_listener)
-
         start_server
       end
     end
@@ -45,8 +44,8 @@ module ThreadedServer
     describe "#start_request_listener" do
       it "parses the request upon receiving it" do
         start_server
-        # ThreadedServer::HTTPParser.should_receive(:parse_request)
-
+        # @server.should_not_receive(:write_response)
+        # get("/index.html")
       end
     end
   end

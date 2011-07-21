@@ -1,2 +1,1 @@
-default: --profile doc_report
-doc_report: --color --format progress
+default: --color --format progress --tags @wip

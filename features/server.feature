@@ -8,7 +8,6 @@ Feature: Server control
     When I start the server on port 8000
     Then I should see "Server started on port 8000"
 
-
   Scenario: Stop server
     Given the server is running
     When I stop the server

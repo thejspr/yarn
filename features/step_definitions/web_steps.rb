@@ -2,11 +2,11 @@ require 'uri'
 require 'cgi'
 
 Given /^(?:|I )am on (.+)$/ do |url|
-  visit url
+  visit "http://#{@server.host}:#{@server.port}/#{url}"
 end
 
 When /^(?:|I )go to (.+)$/ do |url|
-  visit url
+  visit "http://#{@server.host}:#{@server.port}/#{url}"
 end
 
 When /^(?:|I )press "([^"]*)"$/ do |button|
@@ -72,6 +72,7 @@ Then /^the page should not contain \/([^\/]*)\/$/ do |regexp|
 end
  
 Then /^(?:|I )should be on (.+)$/ do |url|
+  url = "http://#{@server.host}:#{@server.port}#{url}"
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
     current_path.should == url
