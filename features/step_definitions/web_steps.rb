@@ -6,6 +6,10 @@ Given /^(?:|I )am on (.+)$/ do |url|
 end
 
 When /^(?:|I )go to (.+)$/ do |url|
+  get url
+end
+
+When /^(?:|I )visit (.+)$/ do |url|
   visit "http://#{@server.host}:#{@server.port}/#{url}"
 end
 

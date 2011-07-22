@@ -10,18 +10,16 @@ module Helpers
   end
 
   def get(url)
-    HTTPClient.timeout(10) do 
-      HTTPClient.get(URI.parse("http://#{@server.host}:#{@server.port}" + url))
-    end
+    HTTPClient.get(URI.parse("http://#{@server.host}:#{@server.port}" + url))
   end
   
   def post(url, params={})
-    HTTPClient.post(URI.parse("http://#{@server.host}:#{@server.port}" + url), params).body
+    HTTPClient.post(URI.parse("http://#{@server.host}:#{@server.port}/" + url), params).body
   end
 
   def stop_server
-    @server.stop
     @thread.kill
+    @server.stop
   end
 
   def start_server(host='localhost',port=8000)

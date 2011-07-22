@@ -46,3 +46,6 @@ Given /^the file "([^"]*)" does not exist$/ do |file|
   File.exists?(File.join(File.join(File.dirname(__FILE__), "/../../"), file)).should be_false
 end
 
+When /^I debug "([^"]*)"$/ do |message|
+  @server.debug message
+end

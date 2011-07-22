@@ -12,3 +12,5 @@ require 'threaded_server/helpers'
 RSpec.configure do |config|
   config.include Helpers
 end
+
+# Capybara.javascript_driver = :webkit

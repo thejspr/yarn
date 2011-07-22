@@ -37,7 +37,8 @@ module ThreadedServer
     def start_request_listener
       while( session = @socket.accept ) do
         log session.gets
-        write_response(session,nil,[],"Success!")
+        body = File.new('index.html').read
+        write_response(session,nil,[],body)
       end
     end
 
@@ -47,6 +48,7 @@ module ThreadedServer
       write_body session, body
       
       session.close
+      log "Served: index.html"
     end
 
     def write_status(session,status)
