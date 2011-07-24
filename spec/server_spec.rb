@@ -27,11 +27,6 @@ module ThreadedServer
         start_server('localhost',4000)
         @server.socket.addr.should include(4000)
       end
-
-      it "calls the start_request_listener method" do
-        @server.should_receive(:start_request_listener)
-        start_server
-      end
     end
 
     describe "#stop" do
@@ -41,12 +36,5 @@ module ThreadedServer
       end
     end
 
-    describe "#start_request_listener" do
-      it "parses the request upon receiving it" do
-        start_server
-        # @server.should_not_receive(:write_response)
-        # get("/index.html")
-      end
-    end
   end
 end

@@ -21,7 +21,18 @@ module ThreadedServer
 
         log "Server started on port #{port}"
 
-        start_request_listener
+        while( session = @socket.accept ) do
+          Thread.new do 
+            log session.gets
+            body = File.new('index.html').read
+            
+            session.puts "HTTP/1.1 200 OK"
+            session.puts "\r\n"
+            session.puts body
+
+            session.close
+          end
+        end
       rescue Exception => e
         log "An error occured starting ThreadedServer: #{e.message}"
       end
@@ -32,38 +43,6 @@ module ThreadedServer
       @socket = nil
 
       log "Server stopped"
-    end
-
-    def start_request_listener
-      while( session = @socket.accept ) do
-        log session.gets
-        body = File.new('index.html').read
-        write_response(session,nil,[],body)
-      end
-    end
-
-    def write_response(session,status,headers,body)
-      write_status session, status
-      write_headers session, headers
-      write_body session, body
-      
-      session.close
-      log "Served: index.html"
-    end
-
-    def write_status(session,status)
-      session.puts "HTTP/1.1 200 OK"
-    end
-
-    def write_headers(session,headers)
-      headers.each do |header|
-        session.puts header + "\r\n"
-      end
-    end
-
-    def write_body(session,body)
-      session.puts "\r\n"
-      session.puts body
     end
 
   end

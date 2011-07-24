@@ -10,11 +10,13 @@ module Helpers
   end
 
   def get(url)
-    HTTPClient.get(URI.parse("http://#{@server.host}:#{@server.port}" + url))
+    uri = URI.parse("http://#{@server.host}:#{@server.port}" + url)
+    HTTPClient.get(uri)
   end
   
   def post(url, params={})
-    HTTPClient.post(URI.parse("http://#{@server.host}:#{@server.port}/" + url), params).body
+    uri = URI.parse("http://#{@server.host}:#{@server.port}" + url)
+    HTTPClient.post(uri, params).body
   end
 
   def stop_server
