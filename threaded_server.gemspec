@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = ThreadedServer::VERSION
   s.authors     = ["Jesper Kjeldgaard"]
   s.email       = ["jkjeldgaard@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/thejspr/threaded_server"
   s.summary     = %q{Multi-threaded webserver}
-  s.description = %q{A simple multi-threaded web-server with CGI functionality.}
+  s.description = %q{A simple multi-threaded web-server with CGI functionality written in Ruby 1.9.}
 
   s.rubyforge_project = "threaded_server"
 
