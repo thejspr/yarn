@@ -4,9 +4,9 @@ require 'rubygems'
 require 'bundler/setup'
 require 'capybara/rspec'
 
-require 'threaded_server'
-require 'threaded_server/logger'
-require 'threaded_server/version'
+require 'yarn'
+require 'yarn/logger'
+require 'yarn/version'
 require 'helpers'
 
 RSpec.configure do |config|

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module ThreadedServer
+module Yarn
   describe Server do
 
     before(:each) do
@@ -25,6 +25,7 @@ module ThreadedServer
 
       it "starts on the supplied port" do
         start_server('localhost',4000)
+        puts @server.socket
         @server.socket.addr.should include(4000)
       end
     end

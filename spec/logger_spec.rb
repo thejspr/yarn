@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-module ThreadedServer
+module Yarn
   describe Logger do
     before do
-      @object = ThreadedServer::Server.new STDOUT
+      @object = Yarn::Server.new STDOUT
     end 
 
     describe "#log" do

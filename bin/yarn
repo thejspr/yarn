@@ -11,7 +11,7 @@ else
   exit
 end
 
-require 'threaded_server'
+require 'yarn'
 
-server = ThreadedServer::Server.new(STDOUT)
+server = Yarn::Server.new(STDOUT)
 server.start 'localhost', port

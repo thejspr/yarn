@@ -1,17 +1,17 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "threaded_server/version"
+require "yarn/version"
 
 Gem::Specification.new do |s|
-  s.name        = "threaded_server"
-  s.version     = ThreadedServer::VERSION
+  s.name        = "yarn"
+  s.version     = Yarn::VERSION
   s.authors     = ["Jesper Kjeldgaard"]
   s.email       = ["jkjeldgaard@gmail.com"]
-  s.homepage    = "https://github.com/thejspr/threaded_server"
+  s.homepage    = "https://github.com/thejspr/yarn"
   s.summary     = %q{Multi-threaded webserver}
-  s.description = %q{A simple multi-threaded web-server with CGI functionality written in Ruby 1.9.}
+  s.description = %q{A multi-threaded web-server written in Ruby 1.9.}
 
-  s.rubyforge_project = "threaded_server"
+  s.rubyforge_project = "yarn"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

@@ -15,7 +15,7 @@ def output
 end
 
 When /^I start the server on port (\d+)$/ do |port|
-  @server = ThreadedServer::Server.new(output)
+  @server = Yarn::Server.new(output)
   start_server('localhost',port)
 end
 
@@ -28,7 +28,7 @@ When /^I stop the server$/ do
 end
 
 Given /^the server is running$/ do
-  @server = ThreadedServer::Server.new(output)
+  @server = Yarn::Server.new(output)
   start_server
 end
 
