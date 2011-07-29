@@ -12,3 +12,5 @@ gem 'capybara', '~> 1.0'
 # gem 'ruby-debug'
 
 gem 'httpclient'
+
+gem 'rocco' #documentation: http://rtomayko.github.com/rocco/rocco.html
