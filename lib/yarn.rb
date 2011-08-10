@@ -1,7 +1,6 @@
 require "yarn/version"
 require "yarn/logger"
 require "yarn/parser"
-require "yarn/request"
 
 require 'socket'
 

@@ -5,6 +5,7 @@ require 'bundler/setup'
 require 'capybara/rspec'
 
 require 'yarn'
+require 'yarn/parser'
 require 'yarn/logger'
 require 'yarn/version'
 require 'helpers'

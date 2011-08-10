@@ -1,4 +1,4 @@
-require 'httpclient'
+require 'faraday'
 
 module Helpers
   def send_data(data)
@@ -10,8 +10,9 @@ module Helpers
   end
 
   def get(url)
-    uri = URI.parse("http://#{@server.host}:#{@server.port}" + url)
-    HTTPClient.get(uri)
+    uri = URI.parse("http://#{@server.host}:#{@server.port}")
+    conn = Faraday.new(uri)
+    conn.get url
   end
   
   def post(url, params={})
