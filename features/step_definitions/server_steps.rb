@@ -32,6 +32,11 @@ Given /^the server is running$/ do
   start_server
 end
 
+Given /^the server is running as static$/ do
+  @server = Yarn::Server.new(output)
+  start_server
+end
+
 Given /^the server is not running$/ do
   stop_server unless @server.nil?
   @server = nil

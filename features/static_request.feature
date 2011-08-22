@@ -5,8 +5,9 @@ Feature: Static file requests
   To provide fast content on the Internet
 
   Background:
-    Given the server is running
+    Given the server is running as static
 
+  @wip
   Scenario: Serve a static file
     Given the file "index.html" exist
     When I visit index.html

@@ -16,28 +16,23 @@ module Yarn
     end
 
     def start(host,port,debugging)
+      
+      @host, @port, @debugging = host, port, debugging
+
       begin
-        @host, @port, @debugging = host, port, debugging
         @socket = TCPServer.new(@host, @port)
 
         log "Server started on port #{@port}"
 
         while( session = @socket.accept ) do
-          Thread.new do 
-            log session.gets
-            # request = Parser.parse(session)
-            body = File.new('index.html').read
-            log "Served: index.html"
-            
-            session.puts "HTTP/1.1 200 OK"
-            session.puts "\r\n"
-            session.puts body
 
-            session.close
-          end
+          session.close
         end
+
       rescue Exception => e
-        log "An error occured starting Yarn: #{e.message}"
+        log "An error occured: #{e.message}"
+      ensure
+        self.stop
       end
     end
 

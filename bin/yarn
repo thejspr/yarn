@@ -25,8 +25,16 @@ Choice.options do
     desc 'Port number to listen on for incomming requests (default 21)'
     validate /^\d+$/
     cast Integer
-    default 21
+    default 3000
   end
+# 
+#   option :type do
+#     short '-t'
+#     long '--type=TYPE'
+#     desc 'Server type; static, dynamic or rack'
+#     cast Symbol
+#     default :static
+#   end
 
   option :debug do
     short '-d'
@@ -57,4 +65,8 @@ else
 end
 
 server = Yarn::Server.new(STDOUT)
-server.start Choice.choices[:host], Choice.choices[:port], debugging
+server.start(
+  Choice.choices[:host], 
+  Choice.choices[:port], 
+  debugging
+)

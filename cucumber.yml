@@ -1,1 +1,1 @@
-default: --color --format progress
+default: --color --format progress --tag @wip

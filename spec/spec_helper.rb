@@ -8,6 +8,7 @@ require 'yarn'
 require 'yarn/parser'
 require 'yarn/logger'
 require 'yarn/version'
+require 'yarn/request_handler'
 require 'helpers'
 
 RSpec.configure do |config|

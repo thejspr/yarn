@@ -14,7 +14,7 @@ module Yarn
 
     describe "#start" do
       it "notifies the server is started" do
-        @output.should_receive(:puts).with('Server started on port 8000')
+        @output.should_receive(:puts).with('Server started on port 3000')
         start_server
       end
 
@@ -24,7 +24,7 @@ module Yarn
       end
 
       it "starts on the supplied port" do
-        start_server('localhost',4000)
+        start_server(4000)
         puts @server.socket
         @server.socket.addr.should include(4000)
       end

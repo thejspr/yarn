@@ -5,8 +5,8 @@ Feature: Server control
   So that I can control the server
 
   Scenario: Start server
-    When I start the server on port 8000
-    Then I should see "Server started on port 8000"
+    When I start the server on port 3000
+    Then I should see "Server started on port 3000"
 
   Scenario: Stop server
     Given the server is running

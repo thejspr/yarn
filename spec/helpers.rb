@@ -25,8 +25,8 @@ module Helpers
     @server.stop
   end
 
-  def start_server(host='localhost',port=8000)
-    @thread = Thread.new { @server.start(host,port,true) }
+  def start_server(port=3000)
+    @thread = Thread.new { @server.start('127.0.0.1',port,true) }
     sleep 0.1 until @server.socket # wait for socket to be created
   end
 end
