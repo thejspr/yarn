@@ -2,16 +2,45 @@
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
-if ARGV.empty?
-  port = 8000
-elsif ARGV[0] =~ /^\d+$/
-  port = ARGV[0]
-else
-  puts "Invalid port number: #{ARGV[0]}"
-  exit
+require 'yarn'
+require 'choice'
+
+PROGRAM_VERSION = Yarn::VERSION
+
+Choice.options do
+  header 'Yarn webserver'
+  header ''
+  header 'Specific options: '
+
+  option :host do
+    short '-h'
+    long '--host=HOST'
+    desc 'Hostname or IP address of the server (default 127.0.0.1)'
+    default '127.0.0.1'
+  end
+
+  option :port do
+    short '-p'
+    long '--port=PORT'
+    desc 'Port number to listen on for incomming requests (default 21)'
+    cast Integer
+    default 21
+  end
+
+  separator ''
+  separator 'Common options: '
+
+  option :version do
+    short '-v'
+    long '--version'
+    desc 'Show version'
+    action do
+      puts "Yarn v#{PROGRAM_VERSION}"
+      exit
+    end
+
+  end
 end
 
-require 'yarn'
-
 server = Yarn::Server.new(STDOUT)
-server.start 'localhost', port
+server.start Choice.choices[:host], Choice.choices[:port]
