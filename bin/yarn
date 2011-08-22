@@ -23,16 +23,16 @@ Choice.options do
     short '-p'
     long '--port=PORT'
     desc 'Port number to listen on for incomming requests (default 21)'
+    validate /^\d+$/
     cast Integer
     default 21
   end
 
   option :debug do
-    short '-p'
+    short '-d'
     long '--debug'
-    desc 'Include debug messages in the log'
-    cast Boolean
-    default false
+    desc 'Include debug messages in the log (default: off)'
+    default 'off'
   end
 
   separator ''
@@ -50,5 +50,11 @@ Choice.options do
   end
 end
 
+if Choice.choices.debug == 'off'
+  debugging = false
+else
+  debugging = true
+end
+
 server = Yarn::Server.new(STDOUT)
-server.start Choice.choices[:host], Choice.choices[:port], Choice.choices[:debug]
+server.start Choice.choices[:host], Choice.choices[:port], debugging
