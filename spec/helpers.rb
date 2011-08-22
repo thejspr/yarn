@@ -17,7 +17,7 @@ module Helpers
   
   def post(url, params={})
     uri = URI.parse("http://#{@server.host}:#{@server.port}" + url)
-    HTTPClient.post(uri, params).body
+    # HTTPClient.post(uri, params).body
   end
 
   def stop_server
@@ -26,7 +26,7 @@ module Helpers
   end
 
   def start_server(host='localhost',port=8000)
-    @thread = Thread.new { @server.start(host,port) }
+    @thread = Thread.new { @server.start(host,port,true) }
     sleep 0.1 until @server.socket # wait for socket to be created
   end
 end

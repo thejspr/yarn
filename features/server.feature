@@ -1,8 +1,8 @@
 Feature: Server control
 
   As a developer
-  I want to start the server
-  So that I can serve content on the web
+  I want to be able to command the server
+  So that I can control the server
 
   Scenario: Start server
     When I start the server on port 8000

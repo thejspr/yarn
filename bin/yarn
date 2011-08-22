@@ -27,6 +27,14 @@ Choice.options do
     default 21
   end
 
+  option :debug do
+    short '-p'
+    long '--debug'
+    desc 'Include debug messages in the log'
+    cast Boolean
+    default false
+  end
+
   separator ''
   separator 'Common options: '
 
@@ -43,4 +51,4 @@ Choice.options do
 end
 
 server = Yarn::Server.new(STDOUT)
-server.start Choice.choices[:host], Choice.choices[:port]
+server.start Choice.choices[:host], Choice.choices[:port], Choice.choices[:debug]

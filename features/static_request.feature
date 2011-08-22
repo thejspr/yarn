@@ -1,11 +1,13 @@
 Feature: Static file requests
 
   As a web-developer
-  I
-  Want to be able to serve static file requests
+  I want to be able to serve static files
+  To provide fast content on the Internet
+
+  Background:
+    Given the server is running
 
   Scenario: Serve a static file
     Given the file "index.html" exist
-    And I start the server on port 8000
-    When I visit /index.html
+    When I visit index.html
     Then the page should contain "Success!"

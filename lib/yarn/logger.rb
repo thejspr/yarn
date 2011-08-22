@@ -8,7 +8,9 @@ module Yarn
     public :log
 
     def debug(message=nil)
-      @output.puts "debug: " + (message.strip || yield)
+      if @debugging
+        @output.puts "debug: " + (message.strip || yield)
+      end
     end
     module_function :debug 
     public :debug

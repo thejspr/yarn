@@ -9,15 +9,15 @@ module Yarn
 
     include Logger
 
-    attr_accessor :host, :port, :socket, :output
+    attr_accessor :host, :port, :socket, :output, :debugging
 
     def initialize(output)
       @output = output
     end
 
-    def start(host='localhost',port=8000)
+    def start(host,port,debugging)
       begin
-        @host, @port = host, port
+        @host, @port, @debugging = host, port, debugging
         @socket = TCPServer.new(@host, @port)
 
         log "Server started on port #{@port}"
