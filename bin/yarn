@@ -58,15 +58,15 @@ Choice.options do
   end
 end
 
-if Choice.choices.debug == 'off'
-  debugging = false
+if Choice.choices.debug && Choice.choices.debug != 'off'
+  debug = true
 else
-  debugging = true
+  debug = false
 end
 
-server = Yarn::Server.new(STDOUT)
-server.start(
+server = Yarn::Server.new(
   Choice.choices[:host], 
   Choice.choices[:port], 
-  debugging
+  debug
 )
+server.start

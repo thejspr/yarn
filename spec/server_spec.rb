@@ -3,21 +3,11 @@ require 'spec_helper'
 module Yarn
   describe Server do
 
-    before(:each) do
-      @output = double('output').as_null_object
-      @server = Server.new(@output)
-    end 
-
     after(:each) do
       stop_server
     end
 
     describe "#start" do
-      it "notifies the server is started" do
-        @output.should_receive(:puts).with('Server started on port 3000')
-        start_server
-      end
-
       it "creates a TCP server" do
         start_server
         @server.socket.should_not be_nil
@@ -33,7 +23,7 @@ module Yarn
     describe "#stop" do
       it "notifies the server is stopped" do
         start_server
-        @output.should_receive(:puts).with('Server stopped')
+        @server.log.should_receive(:info).with('Server stopped')
       end
     end
 

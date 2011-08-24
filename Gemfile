@@ -5,6 +5,7 @@ gemspec
 
 # gems for testing
 gem 'autotest'
+gem 'fakefs'
 gem 'rspec'
 gem 'cucumber'
 gem 'capybara', '~> 1.0'

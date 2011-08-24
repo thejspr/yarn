@@ -1,22 +1,7 @@
 include Helpers
 
-class Output
-  def messages
-    @messages ||= []
-  end
-
-  def puts(message)
-    messages << message
-  end
-end
-
-def output
-  @output ||= Output.new
-end
-
 When /^I start the server on port (\d+)$/ do |port|
-  @server = Yarn::Server.new(output)
-  start_server('localhost',port)
+  start_server port
 end
 
 Then /^I should see "([^"]*)"$/ do |message|
@@ -28,12 +13,10 @@ When /^I stop the server$/ do
 end
 
 Given /^the server is running$/ do
-  @server = Yarn::Server.new(output)
   start_server
 end
 
 Given /^the server is running as static$/ do
-  @server = Yarn::Server.new(output)
   start_server
 end
 
@@ -43,12 +26,12 @@ Given /^the server is not running$/ do
 end
 
 Given /^the file "([^"]*)" exist$/ do |file|
-  f = File.new File.join(File.join(File.dirname(__FILE__), "/../../"), file)
+  f = File.new File.join(File.join(File.dirname(__FILE__), "/../../"), "test_objects/#{file}")
   File.exists?(f).should be_true
 end
 
 Given /^the file "([^"]*)" does not exist$/ do |file|
-  File.exists?(File.join(File.join(File.dirname(__FILE__), "/../../"), file)).should be_false
+  File.exists?(File.join(File.join(File.dirname(__FILE__), "/../../"), "test_objects/#{file}")).should be_false
 end
 
 When /^I debug "([^"]*)"$/ do |message|
