@@ -1,1 +1,2 @@
-default: --color --format progress --tag @wip
+default: --color --format pretty --tag @wip
+autotest: --color --format pretty --tag @wip

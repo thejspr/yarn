@@ -1,3 +1,4 @@
+require 'uri'
 require 'faraday'
 
 module Helpers
@@ -10,14 +11,13 @@ module Helpers
   end
 
   def get(url)
-    uri = URI.parse("http://#{@server.host}:#{@server.port}")
-    conn = Faraday.new(uri)
-    conn.get url
+    setup
+    @connection.get "test_objects/#{url}"
   end
   
   def post(url, params={})
-    uri = URI.parse("http://#{@server.host}:#{@server.port}" + url)
-    # HTTPClient.post(uri, params).body
+    setup
+    @connection.post url
   end
 
   def stop_server
@@ -29,5 +29,13 @@ module Helpers
     @thread = Thread.new { @server.start('127.0.0.1',port,true) }
     sleep 0.1 until @server.socket # wait for socket to be created
   end
+
+  private
+
+  def setup
+    host = URI.parse("http://#{@server.host}:#{@server.port}")
+    @connection ||= Faraday.new(host)
+  end
+
 end
 
