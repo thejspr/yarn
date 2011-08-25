@@ -4,7 +4,7 @@ module Yarn
   describe RequestHandler do
 
     before(:each) do
-      @dummy_request = "GET /resource/1 HTTP/1.1\r\nKeep-Alive: yes\r\n"
+      @dummy_request = "GET /resource/1 HTTP/1.1\r\n"
 
       @session = mock('TCPSocket')
       @session.stub(:gets).and_return(@dummy_request)
@@ -38,13 +38,13 @@ module Yarn
       end
     end
 
-    describe "#set_content_length" do
-      it "should set the Content-Length header if it's empty" do
-        @handler.response[2] = ["four", "four", "four"]
-        @handler.set_content_length
-        @handler.response[1]["Content-Length"].should == 12
-      end
-    end
+    # describe "#set_content_length" do
+    #   it "should set the Content-Length header if it's empty" do
+    #     @handler.response[2] = ["four", "four", "four"]
+    #     @handler.set_content_length
+    #     @handler.response[1]["Content-Length"].should == 12
+    #   end
+    # end
 
     describe "#return_response" do
       it "should write the response to the socket" do
@@ -54,12 +54,28 @@ module Yarn
       end
     end
 
-    describe "#close_connection" do
-      it "should close the session connection" do
-        @handler.session.should_receive(:close)
-        @handler.close_connection
-      end 
+    describe "#persistent?" do
+      it "should return true if the Connection header is set to keep-alive" do
+        @handler.parse_request
+        @handler.request[:headers] << { :name => "Connection", :value => "keep-alive" }
+        
+        @handler.persistent?.should be_true
+      end
+
+      it "should return false if the Connection header is set to close" do
+        @handler.parse_request
+        @handler.request[:headers] << { :name => "Connection", :value => "close" }
+
+        @handler.persistent?.should be_false
+      end
     end
+
+    # describe "#close_connection" do
+    #   it "should close the session connection" do
+    #     @handler.session.should_receive(:close)
+    #     @handler.close_connection
+    #   end 
+    # end
 
   end
 end

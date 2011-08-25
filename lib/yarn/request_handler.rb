@@ -1,6 +1,7 @@
 require 'yarn/parser'
 require 'yarn/version'
 require 'yarn/statuses'
+require 'yarn/logging'
 require 'date'
 require 'rubygems'
 require 'parslet'
@@ -8,9 +9,13 @@ require 'parslet'
 module Yarn
   class RequestHandler
 
+    include Logging
+
     attr_accessor :parser, :request, :session, :response
 
     def initialize(session)
+      init_logger
+
       @session = session
       @parser = Parser.new
       @response = [ nil, {}, [] ] # [ status, headers, body ]
@@ -21,10 +26,10 @@ module Yarn
     def run
       if parse_request
         prepare_response
-        set_content_length
-        return_response
-        close_connection
       end
+
+      return_response
+      close_connection
     end
 
     def parse_request
@@ -40,15 +45,15 @@ module Yarn
     def prepare_response
     end
 
-    def set_content_length
-      unless @response[1]["Content-Length"]
-        content_length = 0
-        @response[2].each do |line|
-          content_length += line.size
-        end
-        @response[1]["Content-Length"] = content_length
-      end
-    end
+    # def set_content_length
+    #   unless @response[1]["Content-Length"]
+    #     content_length = 0
+    #     @response[2].each do |line|
+    #       content_length += line.size
+    #     end
+    #     @response[1]["Content-Length"] = content_length
+    #   end
+    # end
 
     def return_response
       @session.puts "HTTP/1.1 #{@response[0]} #{HTTP_STATUS_CODES[@response[0]]}"
@@ -58,21 +63,29 @@ module Yarn
       end
 
       @session.puts " " # header/body divide
-      
+
       @response[2].each do |line|
         @session.puts line
       end
     end
 
     def close_connection
-      @session.close if @session
+      @session.close if @session && !persistent?
     end
 
-    private
+    def persistent?
+      @request[:headers].each do |header|
+        if header[:name] == "Connection"
+         return header[:value] == "keep-alive"
+        end
+      end
+
+      false
+    end
 
     def set_common_headers
       @response[1][:Server] = "Yarn webserver v#{VERSION}"
-      
+
       # HTTP date format: Fri, 31 Dec 1999 23:59:59 GMT
       time = DateTime.now.new_offset(0)
       @response[1][:Date] = time.strftime("%a, %d %b %Y %H:%M:%S GMT")

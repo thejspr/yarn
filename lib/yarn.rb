@@ -1,31 +1,29 @@
 require "yarn/version"
 require "yarn/request_handler"
 require "yarn/static_handler"
+require "yarn/logging"
 
 require 'socket'
-require 'logger'
 
 module Yarn
 
   class Server
 
-    attr_accessor :host, :port, :socket, :log
+    include Logging
+
+    attr_accessor :host, :port, :socket
 
     def initialize(host,port,debug)
       @host = host
       @port = port
 
-      @log = Logger.new(STDOUT)
-      @log.formatter = proc { |severity, datetime, progname, msg|
-        "#{datetime.strftime("%H:%M:%S")} - #{severity}: #{msg}\n"
-      }
-      @log.level = Logger::DEBUG if debug
+      init_logger(debug)
     end
 
     def start
       @socket = TCPServer.new(@host, @port)
 
-      @log.info "Yarn started and accepting requests on #{@host}:#{@port}"
+      log.info "Yarn started and accepting requests on #{@host}:#{@port}"
 
       while( session = @socket.accept ) do
         handler = StaticHandler.new(session)
@@ -38,7 +36,7 @@ module Yarn
       @socket.close unless @socket.nil?
       @socket = nil
 
-      @log.info "Server stopped"
+      log.info "Server stopped"
     end
 
   end
