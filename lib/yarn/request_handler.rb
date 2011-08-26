@@ -83,13 +83,7 @@ module Yarn
     end
 
     def persistent?
-      @request[:headers].each do |header|
-        if header[:name] == "Connection"
-         return header[:value] == "keep-alive"
-        end
-      end
-
-      false
+      return @request[:headers]["Connection"] == "keep-alive"
     end
 
     def set_common_headers

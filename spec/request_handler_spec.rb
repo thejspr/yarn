@@ -57,14 +57,14 @@ module Yarn
     describe "#persistent?" do
       it "should return true if the Connection header is set to keep-alive" do
         @handler.parse_request
-        @handler.request[:headers] << { :name => "Connection", :value => "keep-alive" }
+        @handler.request[:headers]["Connection"] = "keep-alive"
         
         @handler.persistent?.should be_true
       end
 
       it "should return false if the Connection header is set to close" do
         @handler.parse_request
-        @handler.request[:headers] << { :name => "Connection", :value => "close" }
+        @handler.request[:headers]["Connection"] = "close"
 
         @handler.persistent?.should be_false
       end
