@@ -66,7 +66,6 @@ end
 
 server = Yarn::Server.new(
   Choice.choices[:host], 
-  Choice.choices[:port], 
-  debug
+  Choice.choices[:port] 
 )
 server.start

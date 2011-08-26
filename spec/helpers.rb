@@ -26,7 +26,7 @@ module Helpers
   end
 
   def start_server(port=3000)
-    @server = Yarn::Server.new('127.0.0.1', port, true)
+    @server = Yarn::Server.new('127.0.0.1', port)
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
   end

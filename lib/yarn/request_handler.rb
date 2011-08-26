@@ -14,8 +14,6 @@ module Yarn
     attr_accessor :parser, :request, :session, :response
 
     def initialize(session)
-      init_logger
-
       @session = session
       @parser = Parser.new
       @response = [ nil, {}, [] ] # [ status, headers, body ]
@@ -35,9 +33,11 @@ module Yarn
     def parse_request
       begin
         @request = @parser.parse @session.gets
+        debug "Parse successfull: #{@request}"
         true
       rescue Parslet::ParseFailed => e
         @response[0] = 400
+        debug "Parse failed: #{@request}"
         false
       end
     end
@@ -62,15 +62,24 @@ module Yarn
         @session.puts "#{key}: #{value}"
       end
 
-      @session.puts " " # header/body divide
+      @session.puts ""
 
+      content_length = 0
       @response[2].each do |line|
+        content_length += line.size
         @session.puts line
       end
+      debug "Sent #{@response[1].size} headers and a body of size: #{content_length}"
     end
 
     def close_connection
-      @session.close if @session && !persistent?
+      if @session && !persistent?
+        @session.close
+        debug "Connection closed."
+      else
+        # TODO: start some kind of timeout
+        debug "Handler finished, connection kept open."
+      end
     end
 
     def persistent?

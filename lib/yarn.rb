@@ -13,30 +13,33 @@ module Yarn
 
     attr_accessor :host, :port, :socket
 
-    def initialize(host,port,debug)
+    def initialize(host,port)
       @host = host
       @port = port
-
-      init_logger(debug)
     end
 
     def start
       @socket = TCPServer.new(@host, @port)
 
-      log.info "Yarn started and accepting requests on #{@host}:#{@port}"
+      log "Yarn started and accepting requests on #{@host}:#{@port}"
 
-      while( session = @socket.accept ) do
-        handler = StaticHandler.new(session)
-        handler.run
+      begin
+        while( session = @socket.accept ) do
+          handler = StaticHandler.new session
+          handler.run
+        end
+      rescue Interrupt => e
+        log "Server interrupted, stopping..."
+      ensure
+        stop
       end
-      stop
     end
 
     def stop
       @socket.close unless @socket.nil?
       @socket = nil
 
-      log.info "Server stopped"
+      log "Server stopped"
     end
 
   end

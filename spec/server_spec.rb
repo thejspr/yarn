@@ -23,7 +23,7 @@ module Yarn
     describe "#stop" do
       it "notifies the server is stopped" do
         start_server
-        @server.log.should_receive(:info).with('Server stopped')
+        @server.should_receive(:log).with('Server stopped')
       end
     end
 

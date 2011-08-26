@@ -10,12 +10,15 @@ module Yarn
       if File.exists? path
         @response[0] = 200
         @response[2] = read_file path
+        debug "Static request: 200 #{path}"
       elsif File.directory? path
         @response[0] = 200
         @response[2] << directory_listing
+        debug "Static request: 200 #{path} (directory)"
       else
         @response[0] = 404
         @response[2] << error_message
+        debug "Static request: 404 #{path} (file/folder not found)"
       end
     end
 
