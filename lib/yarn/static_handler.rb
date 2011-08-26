@@ -10,7 +10,12 @@ module Yarn
       if File.exists? path
         @response[0] = 200
         @response[2] = read_file path
-        debug "Static request: 200 #{path}"
+        if (mime_type = get_mime_type path)
+          @response[1]["Content-Type"] = mime_type
+          debug "Static request: 200 #{path} #{mime_type}"
+        else
+          debug "Static request: 200 #{path} Mime-type not detected!"
+        end
       elsif File.directory? path
         @response[0] = 200
         @response[2] << directory_listing
@@ -46,5 +51,27 @@ module Yarn
     def error_message
       "<html><head><title>404</title></head><body><h1>File does not exist.</h1></body><html>"
     end
+    
+    def get_mime_type(path)
+      return false unless path.include? '.'
+      filetype = path.split('.').last
+      
+      return case
+      when ["html", "htm"].include?(filetype)
+        "text/html"
+      when "txt" == filetype 
+        "text/plain"
+      when "css" == filetype
+        "text/css"
+      when "js" == filetype
+        "text/javascript"
+      when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
+        "image/#{filetype}"
+      when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
+        "application/#{filetype}"
+      else false
+      end
+    end
+
   end
 end

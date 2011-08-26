@@ -32,7 +32,7 @@ module Yarn
 
     def parse_request
       begin
-        @request = @parser.parse @session.gets
+        @request = @parser.run @session.gets
         debug "Parse successfull: #{@request}"
         true
       rescue Parslet::ParseFailed => e

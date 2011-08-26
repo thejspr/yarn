@@ -33,5 +33,44 @@ module Yarn
         @handler.read_file("index.html").should == [@file_content]
       end
     end
+
+    describe "#get_mime_type" do
+      it "should return false if the filetype cannot be detected" do
+        @handler.get_mime_type("dumbfile.asdf").should be_false
+      end
+
+      it "should detect plain text files" do
+        @handler.get_mime_type("file.txt").should == "text/plain"
+      end
+
+      it "should return false if the path doent have an extension" do
+        @handler.get_mime_type("asdfasdf").should be_false
+      end
+
+      it "should detect css files" do
+        @handler.get_mime_type("stylesheet.css").should == "text/css"
+      end
+
+      it "should detect javascript files" do
+        @handler.get_mime_type("jquery.js").should == "text/javascript"
+      end
+
+      it "should detect html files" do
+        @handler.get_mime_type("index.html").should == "text/html"
+      end
+
+      it "should detect image files" do
+        ["png", "jpg", "jpeg", "gif", "tiff"].each do |filetype|
+          @handler.get_mime_type("image.#{filetype}").should == "image/#{filetype}"
+        end
+      end
+
+      it "should detect application formats" do
+        formats = ["zip","pdf","postscript","x-tar","x-dvi"]
+        formats.each do |filetype|
+          @handler.get_mime_type("file.#{filetype}").should == "application/#{filetype}"
+        end
+      end
+    end
   end
 end
