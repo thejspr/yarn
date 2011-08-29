@@ -1,22 +1,16 @@
 Feature: Logger
 
   As a developer
-  I
-  Want to log requests and responses
+  I want logging functionality
+  To be able to debug and monitor servr usage
 
   Background:
     Given the server is running
 
-  Scenario: Log requests
-    Given the file "index.html" exist
-    When I go to /index.html
-    Then I should see "GET /index.html HTTP/1.1"
-
-  Scenario: Log responses
-    Given the file "index.html" exist
-    When I go to /index.html
-    Then I should see "Served: index.html"
+  Scenario: Log messages
+    When I log "log message"
+    Then I should see "log message"
 
   Scenario: Log debug messages
     When I debug "debug message"
-    Then I should see "debug: debug message"
+    Then I should see "DEBUG: debug message"

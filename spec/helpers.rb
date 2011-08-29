@@ -1,5 +1,6 @@
 require 'uri'
 require 'faraday'
+require 'stringio'
 
 module Helpers
   def send_data(data)
@@ -14,7 +15,7 @@ module Helpers
     setup
     @connection.get "test_objects/#{url}"
   end
-  
+
   def post(url, params={})
     setup
     @connection.post url
@@ -29,6 +30,18 @@ module Helpers
     @server = Yarn::Server.new('127.0.0.1', port)
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
+  end
+
+  def capture(*streams)
+    streams.map! { |stream| stream.to_s }
+    begin
+      result = StringIO.new
+      streams.each { |stream| eval "$#{stream} = result" }
+      yield
+    ensure
+      streams.each { |stream| eval("$#{stream} = #{stream.upcase}") }
+    end
+    result.string
   end
 
   private

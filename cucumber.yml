@@ -1,2 +1,3 @@
 default: --color --format pretty --tag @wip
-autotest: --color --format pretty --tag @wip
+autotest: --color --format pretty
+# autotest: --color --format pretty --tag @wip

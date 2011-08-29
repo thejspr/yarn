@@ -1,15 +1,11 @@
 include Helpers
 
 When /^I start the server on port (\d+)$/ do |port|
-  start_server port
-end
-
-Then /^I should see "([^"]*)"$/ do |message|
-  output.messages.should include(message)
+  @output = capture(:stdout) { start_server port }
 end
 
 When /^I stop the server$/ do
-  stop_server unless @server.nil?
+  @output = capture(:stdout) { stop_server unless @server.nil? }
 end
 
 Given /^the server is running$/ do
@@ -34,6 +30,14 @@ Given /^the file "([^"]*)" does not exist$/ do |file|
   File.exists?(File.join(File.join(File.dirname(__FILE__), "/../../"), "test_objects/#{file}")).should be_false
 end
 
+When /^I log "([^"]*)"$/ do |message|
+  @output = capture(:stdout) { @server.log message }
+end
+
 When /^I debug "([^"]*)"$/ do |message|
-  @server.debug message
+  @output = capture(:stdout) { @server.debug message }
+end
+
+Then /^I should see "([^"]*)"$/ do |message|
+  @output.include? message
 end

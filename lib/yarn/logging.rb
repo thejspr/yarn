@@ -1,27 +1,22 @@
 require 'logger'
+require 'date'
 
 module Yarn
   module Logging
-# 
-#     def logger
-#       if @logger
-#         @logger
-#       else
-#         @logger = Logger.new(output)
-#         @logger.formatter = proc { |severity, datetime, progname, msg|
-#           "#{datetime.strftime("%H:%M:%S")} - #{severity}: #{msg}\n"
-#         }
-#         @logger.level = Logger::DEBUG if debug
-#         @logger
-#       end
-#     end
 
     def log(msg)
-      puts msg
+      puts "#{timestamp} #{msg}"
     end
 
     def debug(msg=nil)
-      log msg || yield
+      log "DEBUG: #{msg || yield}"
+    end
+
+    private
+
+    def timestamp
+      current_time = DateTime.now
+      "#{current_time.strftime("%d/%m/%y %H:%M:%S")} -"
     end
   end
 end

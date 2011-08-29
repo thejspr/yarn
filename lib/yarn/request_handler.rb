@@ -34,6 +34,7 @@ module Yarn
       begin
         @request = @parser.run @session.gets
         debug "Parse successfull: #{@request}"
+        # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
       rescue Parslet::ParseFailed => e
         @response[0] = 400

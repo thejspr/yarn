@@ -4,7 +4,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'capybara/rspec'
 require 'fakefs'
-require 'fakefs/spec_helpers'
+# require 'fakefs/spec_helpers'
 
 require 'yarn'
 require 'yarn/parser'
@@ -15,5 +15,5 @@ require 'helpers'
 
 RSpec.configure do |config|
   config.include Helpers
-  config.include FakeFS::SpecHelpers
+  # config.include FakeFS::SpecHelpers
 end
