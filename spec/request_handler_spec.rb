@@ -10,6 +10,7 @@ module Yarn
       @session.stub(:gets).and_return(@dummy_request)
       
       @handler = RequestHandler.new @session
+      @handler.stub(:debug,:log).and_return(true) #silence output
     end
 
     describe "#parse_request" do

@@ -1,11 +1,11 @@
 include Helpers
 
 When /^I start the server on port (\d+)$/ do |port|
-  @output = capture(:stdout) { start_server port }
+  start_server port
 end
 
 When /^I stop the server$/ do
-  @output = capture(:stdout) { stop_server unless @server.nil? }
+  stop_server unless @server.nil?
 end
 
 Given /^the server is running$/ do
@@ -31,13 +31,13 @@ Given /^the file "([^"]*)" does not exist$/ do |file|
 end
 
 When /^I log "([^"]*)"$/ do |message|
-  @output = capture(:stdout) { @server.log message }
+  @server.log message
 end
 
 When /^I debug "([^"]*)"$/ do |message|
-  @output = capture(:stdout) { @server.debug message }
+  @server.debug message
 end
 
 Then /^I should see "([^"]*)"$/ do |message|
-  @output.include? message
+  $console.contains? message
 end

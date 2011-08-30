@@ -15,7 +15,7 @@ module Yarn
 
       it "starts on the supplied port" do
         start_server(4000)
-        puts @server.socket
+
         @server.socket.addr.should include(4000)
       end
     end
@@ -23,9 +23,9 @@ module Yarn
     describe "#stop" do
       it "notifies the server is stopped" do
         start_server
-        @output = capture(:stdout) { @server.stop }
+        @server.stop
 
-        @output.should include("Server stopped")
+        $console.should include("Server stopped")
       end
     end
 

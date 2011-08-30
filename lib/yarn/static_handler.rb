@@ -7,19 +7,20 @@ module Yarn
     def prepare_response
       path = extract_path
 
-      if File.exists? path
+      if File.exists?(path) && !File.directory?(path)
         @response[0] = 200
         @response[2] = read_file path
-        if (mime_type = get_mime_type path)
-          @response[1]["Content-Type"] = mime_type
-          debug "Static request: 200 #{path} #{mime_type}"
-        else
-          debug "Static request: 200 #{path} Mime-type not detected!"
-        end
+        @response[1]["Content-Type"] = get_mime_type path
       elsif File.directory? path
         @response[0] = 200
-        @response[2] << directory_listing
-        debug "Static request: 200 #{path} (directory)"
+        index_file = File.join(path,"index.html")
+        if File.exists?(index_file)
+          @response[2] = read_file index_file
+          @response[1]["Content-Type"] = get_mime_type index_file
+        else
+          @response[2] << directory_listing
+          debug "Static request: 200 #{path} (directory)"
+        end
       else
         @response[0] = 404
         @response[2] << error_message
@@ -42,7 +43,7 @@ module Yarn
 
     def extract_path
       path = @request[:uri][:path].to_s
-      path = path[1..-1] if path[0] == "/"
+      path = path[1..-1] if path[0] == "/" && path != "/"
     end
 
     def directory_listing

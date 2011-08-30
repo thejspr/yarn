@@ -1,4 +1,4 @@
-test_objects/
+test_objects/*
 *.gem
 .bundle
 Gemfile.lock

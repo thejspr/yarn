@@ -7,15 +7,14 @@ Feature: Static file requests
   Background:
     Given the server is running as static
 
-  @wip
   Scenario: Serve a static html file
     Given the file "index.html" exist
-    When I go to "index.html"
+    When I go to "/index.html"
     Then the response should contain "Success!"
 
   Scenario: Serve an javascript file
     Given the file "jquery.js" exist
-    When I go to "jquery.js"
+    When I go to "/jquery.js"
     Then the response should contain "jQuery JavaScript Library"
     And the response should contain "})(window);"
 
@@ -24,3 +23,8 @@ Feature: Static file requests
     When I go to "non-existent-file.html"
     Then the response should contain "404"
     Then the response should contain "File does not exist"
+
+  Scenario: Default to index.html if no path is given
+    Given the file "index.html" exist
+    When I go to "/"
+    Then the response should contain "Success!"

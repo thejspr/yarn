@@ -5,7 +5,7 @@ module Yarn
   module Logging
 
     def log(msg)
-      puts "#{timestamp} #{msg}"
+      output.puts "#{timestamp} #{msg}"
     end
 
     def debug(msg=nil)
@@ -13,6 +13,10 @@ module Yarn
     end
 
     private
+
+    def output
+      $output || $stdout
+    end
 
     def timestamp
       current_time = DateTime.now

@@ -79,7 +79,6 @@ module Yarn
         debug "Connection closed."
       else
         # TODO: start some kind of timeout
-        debug "Handler finished, connection kept open."
       end
     end
 

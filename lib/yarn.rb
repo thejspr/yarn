@@ -13,9 +13,10 @@ module Yarn
 
     attr_accessor :host, :port, :socket
 
-    def initialize(host,port)
+    def initialize(host,port,output=$stdout)
       @host = host
       @port = port
+      $output = output
     end
 
     def start
