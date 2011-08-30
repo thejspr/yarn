@@ -7,7 +7,8 @@ module Yarn
 
     describe "#list" do
       it "returns valid HTML" do
-        response = DirectoryLister.new("/var").list("/")
+        FakeFS.deactivate!
+        response = DirectoryLister.new.list("lib")
         lambda { Nokogiri::HTML(response) { |config| config.strict }.should_not raise(Nokogiri::HTML::SyntaxError)
         }
       end

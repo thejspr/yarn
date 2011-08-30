@@ -9,14 +9,9 @@ module Yarn
       @session = mock('TCPSocket')
       @session.stub(:gets).and_return(@dummy_request)
       
-      @handler = RequestHandler.new @session
+      @handler = RequestHandler.new
+      @handler.session = @session
       @handler.stub(:debug,:log).and_return(true) #silence output
-    end
-
-    describe "#initialize" do
-      it "sets the base path" do
-        @handler.basepath.should_not be_nil
-      end
     end
 
     describe "#parse_request" do

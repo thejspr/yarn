@@ -3,3 +3,4 @@ test_objects/*
 .bundle
 Gemfile.lock
 pkg/*
+*.rbc

@@ -24,11 +24,16 @@ module Yarn
 
       log "Yarn started and accepting requests on #{@host}:#{@port}"
 
+      # handlers = []
+      # 10.times do
+      #   handlers << StaticHandler.new
+      # end
+
       begin
         while( session = @socket.accept ) do
           begin
-          handler = StaticHandler.new session
-          handler.run
+          handler = StaticHandler.new
+          handler.run session
           rescue Exception => e
             log e.message
             session.close

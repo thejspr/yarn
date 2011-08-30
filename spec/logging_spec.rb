@@ -14,7 +14,7 @@ module Yarn
       end
 
       it "should be available in the handler classes" do
-        @handler = RequestHandler.new nil
+        @handler = RequestHandler.new
 
         @handler.should respond_to(:log)
         @handler.should respond_to(:debug)

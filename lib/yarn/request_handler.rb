@@ -5,23 +5,25 @@ require 'yarn/logging'
 require 'date'
 require 'rubygems'
 require 'parslet'
+# require 'celluloid'
 
 module Yarn
   class RequestHandler
 
+    # include Celluloid
     include Logging
 
     attr_accessor :session, :parser, :request, :response
 
-    def initialize(session)
-      @session = session
+    def initialize
       @parser = Parser.new
       @response = [ nil, {}, [] ] # [ status, headers, body ]
 
       set_common_headers
     end
 
-    def run
+    def run(session)
+      @session = session
       if parse_request
         prepare_response
       end
@@ -34,7 +36,7 @@ module Yarn
       begin
         @request = @parser.run @session.gets
         debug "Parse successful: #{@request}"
-        log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
+        # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
       rescue Parslet::ParseFailed => e
         @response[0] = 400
@@ -70,7 +72,7 @@ module Yarn
         content_length += line.size
         @session.puts line
       end
-      debug "Sent #{@response[1].size} headers and a body of size: #{content_length}"
+      # debug "Sent #{@response[1].size} headers and a body of size: #{content_length}"
     end
 
     def close_connection
@@ -92,7 +94,7 @@ module Yarn
       time = DateTime.now.new_offset(0)
       @response[1][:Date] = time.strftime("%a, %d %b %Y %H:%M:%S GMT")
       # Close connection header ( until support for persistent connections )
-      @response[1][:Connection] = "Close"
+      # @response[1][:Connection] = "Close"
     end
 
   end

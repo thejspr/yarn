@@ -4,7 +4,8 @@ module Yarn
   describe StaticHandler do
 
     before(:each) do
-      @handler = StaticHandler.new @session
+      @handler = StaticHandler.new
+      @handler.session = @session
       @handler.stub(:extract_path).and_return("index.html")
 
       FakeFS.activate!
