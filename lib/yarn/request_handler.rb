@@ -11,7 +11,7 @@ module Yarn
 
     include Logging
 
-    attr_accessor :parser, :request, :session, :response
+    attr_accessor :session, :parser, :request, :response
 
     def initialize(session)
       @session = session
@@ -33,8 +33,8 @@ module Yarn
     def parse_request
       begin
         @request = @parser.run @session.gets
-        debug "Parse successfull: #{@request}"
-        # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
+        debug "Parse successful: #{@request}"
+        log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
       rescue Parslet::ParseFailed => e
         @response[0] = 400
@@ -76,7 +76,6 @@ module Yarn
     def close_connection
       if @session && !persistent?
         @session.close
-        debug "Connection closed."
       else
         # TODO: start some kind of timeout
       end

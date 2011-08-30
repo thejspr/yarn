@@ -13,6 +13,12 @@ module Yarn
       @handler.stub(:debug,:log).and_return(true) #silence output
     end
 
+    describe "#initialize" do
+      it "sets the base path" do
+        @handler.basepath.should_not be_nil
+      end
+    end
+
     describe "#parse_request" do
       it "should invoke the Parser" do
         @handler.parser.should_receive(:parse)

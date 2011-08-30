@@ -26,8 +26,13 @@ module Yarn
 
       begin
         while( session = @socket.accept ) do
+          begin
           handler = StaticHandler.new session
           handler.run
+          rescue Exception => e
+            log e.message
+            session.close
+          end
         end
       rescue Interrupt => e
         log "Server interrupted, stopping..."

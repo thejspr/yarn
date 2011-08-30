@@ -11,6 +11,7 @@ gem 'cucumber'
 gem 'capybara', '~> 1.0'
 gem 'capybara-webkit'#, :git => 'https://github.com/thoughtbot/capybara-webkit.git'
 gem 'faraday' # http client library
+gem 'nokogiri'
 
 #documentation: http://rtomayko.github.com/rocco/rocco.html
 gem 'rocco'

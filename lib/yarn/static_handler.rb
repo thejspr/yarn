@@ -1,4 +1,5 @@
 require 'yarn/request_handler'
+require 'yarn/directory_lister'
 
 module Yarn
 
@@ -14,11 +15,13 @@ module Yarn
       elsif File.directory? path
         @response[0] = 200
         index_file = File.join(path,"index.html")
-        if File.exists?(index_file)
+        if File.exists? index_file
           @response[2] = read_file index_file
           @response[1]["Content-Type"] = get_mime_type index_file
         else
-          @response[2] << directory_listing
+          @response[1]["Content-Type"] = "text/html"
+          directory_lister ||= DirectoryLister.new(@basepath)
+          @response[2] << directory_lister.list(path)
           debug "Static request: 200 #{path} (directory)"
         end
       else
@@ -43,10 +46,10 @@ module Yarn
 
     def extract_path
       path = @request[:uri][:path].to_s
-      path = path[1..-1] if path[0] == "/" && path != "/"
-    end
-
-    def directory_listing
+      if path[0] == "/" && path != "/"
+        path = path[1..-1] 
+      end
+      path.gsub(/%20/, " ")
     end
 
     def error_message
