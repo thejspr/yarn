@@ -1,4 +1,4 @@
-require 'yarn/parser'
+require 'yarn/parslet_parser'
 require 'yarn/version'
 require 'yarn/statuses'
 require 'yarn/logging'
@@ -16,7 +16,7 @@ module Yarn
     attr_accessor :session, :parser, :request, :response
 
     def initialize
-      @parser = Parser.new
+      @parser = ParsletParser.new
       @response = [ nil, {}, [] ] # [ status, headers, body ]
 
       set_common_headers

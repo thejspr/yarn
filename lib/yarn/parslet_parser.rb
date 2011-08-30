@@ -2,7 +2,7 @@ require 'rubygems'
 require 'parslet'
 
 module Yarn
-  class Parser < Parslet::Parser
+  class ParsletParser < Parslet::Parser
     
     # general rules
 

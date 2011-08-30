@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module Yarn
-  describe Parser do
+  describe ParsletParser do
     before do
-      @parser = Parser.new
+      @parser = ParsletParser.new
     end 
 
     describe "#parse request_line" do

@@ -7,7 +7,7 @@ require 'fakefs'
 # require 'fakefs/spec_helpers'
 
 require 'yarn'
-require 'yarn/parser'
+require 'yarn/parslet_parser'
 require 'yarn/version'
 require 'yarn/request_handler'
 require 'yarn/static_handler'
