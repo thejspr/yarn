@@ -3,7 +3,11 @@ source "http://rubygems.org"
 # Specify your gem's dependencies in threaded_server.gemspec
 gemspec
 
+gem 'polyglot'
+gem 'treetop'
+
 # gems for testing
+gem 'simplecov'
 gem 'autotest'
 gem 'fakefs'
 gem 'rspec'
