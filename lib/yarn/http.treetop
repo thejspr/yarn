@@ -1,0 +1,58 @@
+grammar HTTP
+  rule request
+    request_line headers
+  end
+
+  rule request_line
+    method space request_uri space http_version {
+      def request_line(a,b,c,d,e)
+        {:method => a, :uri => c, :http_version => e}
+      end
+    }
+  end
+
+  rule method
+    "OPTIONS" / "GET" / "HEAD" / "POST" / "PUT" / "DELETE" / "TRACE" / "CONNECT"
+  end
+
+  rule request_uri
+    protocol host path
+  end
+
+  rule protocol
+    "http://"*
+  end
+
+  rule host
+    "*" / [^\/]*
+  end
+
+  rule path
+    [\S]*
+  end
+
+  rule http_version
+    "HTTP/1.1"
+  end
+
+  rule headers
+    header*
+  end
+
+  rule header
+    header_name [:\s:] header_value
+  end
+
+  rule header_name
+    [a-zA-Z\-]+
+  end
+
+  rule header_value
+    [.]+
+  end
+
+  rule space
+    " "+
+  end
+
+end
