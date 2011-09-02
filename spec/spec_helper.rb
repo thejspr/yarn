@@ -5,6 +5,7 @@ require 'simplecov'
 
 SimpleCov.start do
   add_filter "/spec/"
+  add_filter "lib/yarn/http*"
 end
 
 require 'bundler/setup'
@@ -14,7 +15,6 @@ require 'fakefs'
 
 require 'yarn'
 require 'yarn/parslet_parser'
-require 'yarn/treetop_parser'
 require 'yarn/version'
 require 'yarn/request_handler'
 require 'yarn/static_handler'

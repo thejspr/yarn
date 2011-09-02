@@ -6,7 +6,6 @@ module Yarn
     before(:each) do
       @handler = StaticHandler.new
       @handler.session = @session
-      @handler.stub(:extract_path).and_return("index.html")
 
       FakeFS.activate!
       @file_content = "<html><body>success!</body></html>"
@@ -21,10 +20,68 @@ module Yarn
     end
 
     describe "#prepare_response" do
-      it "should always fill the response body" do
-        @handler.response[2].should be_empty
+      it "returns a directory listing if index.html does not exist" do
+        File.delete("index.html")
+        Dir.mkdir("testdir")
+        @handler.stub(:extract_path).and_return("testdir")
+
+        @handler.should_receive(:serve_directory).once
         @handler.prepare_response
-        @handler.response[2].should_not be_empty
+      end
+
+      it "returns the index.html file if it exists" do
+        @handler.stub(:extract_path).and_return(Dir.pwd)
+
+        @handler.should_receive(:serve_directory).once
+        @handler.prepare_response
+      end
+
+      it "returns a file if it exists" do
+        @file_content = "<html><body>success!</body></html>"
+        @file = File.new("test.html", "w")
+        @handler.stub(:extract_path).and_return("test.html")
+
+        @handler.should_receive(:serve_file).once
+        @handler.prepare_response
+      end
+
+      it "handles missing files" do
+        @handler.stub(:extract_path).and_return("non-existing.html")
+        @handler.should_receive(:serve_404_page).once
+
+        @handler.prepare_response
+      end
+    end
+
+    describe "#serve_file" do
+      it "should read an existing file" do
+        @handler.should_receive(:read_file).once
+        @handler.serve_file("index.html")
+      end
+    end
+
+    describe "#serve_directory" do
+      it "should read index file if it exists" do
+        Dir.mkdir("test")
+        File.new("test/index.html", "w")
+        @handler.should_receive(:read_file).once
+
+        @handler.serve_directory("test")
+      end
+
+      it "should list a directory" do
+        directory_lister_mock = mock('DirectoryLister')
+        DirectoryLister.stub(:new).and_return(directory_lister_mock)
+        directory_lister_mock.stub(:list).and_return([])
+        File.rename("index.html","non-index.html")
+        @handler.serve_directory(Dir.pwd)
+      end
+    end
+    
+    describe "#serve_404_page" do
+      it "should read the error message" do
+        @handler.should_receive(:error_message).once
+        @handler.serve_404_page("non-existing-index.html")
       end
     end
 
@@ -71,6 +128,30 @@ module Yarn
         formats.each do |filetype|
           @handler.get_mime_type("file.#{filetype}").should == "application/#{filetype}"
         end
+      end
+    end
+
+    describe "#error_message" do
+      it "should return an html formatted html string" do
+        @handler.error_message.should =~ /<html>/
+        @handler.error_message.should =~ /404/
+      end
+    end
+
+    describe "#extract_path" do
+      it "should remove any leading /'s" do
+        @handler.request = { :uri => { :path => "/asdf" } }
+        @handler.extract_path.should == "asdf"
+      end
+
+      it "should replace %20 with space" do
+        @handler.request = { :uri => { :path => "asdf%20sdf%20" } }
+        @handler.extract_path.should == "asdf sdf"
+      end
+
+      it "should return / if the path is /" do
+        @handler.request = { :uri => { :path => "/" } }
+        @handler.extract_path.should == "/"
       end
     end
   end

@@ -6,7 +6,10 @@ module Yarn
     include Logging
 
     def list(path)
-      response = ["<html><head><title>Directory Listing</title></head><body><h1>Directory Listing</h1><table cellpadding='4'><thead><td><b>Filename</b></td><td><b>Size</b></></thead><tbody>"]
+      response = []
+      response << <<-EOS
+<html><head><title>Directory Listing</title></head><body><h1>Directory Listing</h1><table cellpadding='4'><thead><td><b>Filename</b></td><td><b>Size</b></></thead><tbody>
+        EOS
 
       real_path = File.join(".",path)
       dir = Dir.entries(real_path).sort
@@ -45,8 +48,6 @@ module Yarn
 
       return response
     end
-
-    private
 
     def format_size(size)
       count = 0

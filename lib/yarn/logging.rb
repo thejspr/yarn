@@ -5,14 +5,18 @@ module Yarn
   module Logging
 
     def log(msg)
-      output.puts "#{timestamp} #{msg}"
+      if msg.respond_to?(:each)
+        msg.each do |line|
+          output.puts "#{timestamp} #{line}"
+        end
+      else
+        output.puts "#{timestamp} #{msg}"
+      end
     end
 
     def debug(msg=nil)
       log "DEBUG: #{msg || yield}"
     end
-
-    private
 
     def output
       $output || $stdout

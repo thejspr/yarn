@@ -1,1 +1,5 @@
 # require 'test_notifier/runner/autotest'
+Autotest.add_hook :initialize do |at|
+  at.add_exception(%r{^\./\.git})
+  at.add_exception(%r{^\./coverage})
+end

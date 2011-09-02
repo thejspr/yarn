@@ -36,6 +36,7 @@ module Yarn
           handler.run session
           rescue Exception => e
             log e.message
+            log e.backtrace
             session.close
           end
         end

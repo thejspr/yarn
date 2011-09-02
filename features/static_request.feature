@@ -23,8 +23,3 @@ Feature: Static file requests
     When I go to "non-existent-file.html"
     Then the response should contain "404"
     Then the response should contain "File does not exist"
-
-  Scenario: Default to index.html if no path is given
-    Given the file "index.html" exist
-    When I go to "/"
-    Then the response should contain "Success!"
