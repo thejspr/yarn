@@ -20,6 +20,7 @@ require 'yarn/version'
 require 'yarn/request_handler'
 require 'yarn/static_handler'
 require 'yarn/directory_lister'
+require 'yarn/worker'
 require 'helpers'
 
 RSpec.configure do |config|

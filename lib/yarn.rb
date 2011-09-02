@@ -25,11 +25,6 @@ module Yarn
 
       log "Yarn started and accepting requests on #{@host}:#{@port}"
 
-      # handlers = []
-      # 10.times do
-      #   handlers << StaticHandler.new
-      # end
-
       begin
         while( session = @socket.accept ) do
           begin
@@ -42,7 +37,7 @@ module Yarn
           end
         end
       rescue Interrupt => e
-        log "Server interrupted, stopping..."
+        log "Caught interrupt, stopping..."
       ensure
         stop
       end
