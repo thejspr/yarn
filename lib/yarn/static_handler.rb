@@ -47,13 +47,12 @@ module Yarn
     def read_file(path)
       file_contents = []
 
-      file = File.new(path, "r")
-
-      while (line = file.gets) do
-        file_contents << line
+      File.open(path, "r") do |file|
+        while (line = file.gets) do
+          file_contents << line
+        end
       end
 
-      file.close
       file_contents
     end
 

@@ -40,14 +40,6 @@ module Yarn
       end
     end
 
-    # describe "#set_content_length" do
-    #   it "should set the Content-Length header if it's empty" do
-    #     @handler.response[2] = ["four", "four", "four"]
-    #     @handler.set_content_length
-    #     @handler.response[1]["Content-Length"].should == 12
-    #   end
-    # end
-
     describe "#return_response" do
       it "should write the response to the socket" do
         @handler.session.should_receive(:puts).at_least(1).times
@@ -69,6 +61,18 @@ module Yarn
         @handler.request[:headers]["Connection"] = "close"
 
         @handler.persistent?.should be_false
+      end
+    end
+
+    describe "#run" do
+      it "should call all relevant template methods" do
+        @handler.stub(:parse_request).and_return(true)
+        @handler.should_receive(:parse_request).once
+        @handler.should_receive(:prepare_response).once
+        @handler.should_receive(:return_response).once
+        @handler.should_receive(:close_connection).once
+
+        @handler.run(@dummy_request)
       end
     end
 

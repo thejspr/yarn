@@ -5,12 +5,10 @@ require 'yarn/logging'
 require 'date'
 require 'rubygems'
 require 'parslet'
-# require 'celluloid'
 
 module Yarn
   class RequestHandler
 
-    # include Celluloid
     include Logging
 
     attr_accessor :session, :parser, :request, :response
@@ -48,16 +46,6 @@ module Yarn
     def prepare_response
     end
 
-    # def set_content_length
-    #   unless @response[1]["Content-Length"]
-    #     content_length = 0
-    #     @response[2].each do |line|
-    #       content_length += line.size
-    #     end
-    #     @response[1]["Content-Length"] = content_length
-    #   end
-    # end
-
     def return_response
       @session.puts "HTTP/1.1 #{@response[0]} #{HTTP_STATUS_CODES[@response[0]]}"
 
@@ -67,9 +55,7 @@ module Yarn
 
       @session.puts ""
 
-      content_length = 0
       @response[2].each do |line|
-        content_length += line.size
         @session.puts line
       end
       # debug "Sent #{@response[1].size} headers and a body of size: #{content_length}"

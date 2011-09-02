@@ -6,12 +6,12 @@ module Yarn
   describe DirectoryLister do
 
     before(:each) do
+      FakeFS.deactivate!
       @lister = DirectoryLister.new
     end
 
     describe "#list" do
       it "returns valid HTML for a directory" do
-        FakeFS.deactivate!
         response = @lister.list("lib")
         lambda { Nokogiri::HTML(response) { |config| config.strict }.should_not raise(Nokogiri::HTML::SyntaxError)
         }

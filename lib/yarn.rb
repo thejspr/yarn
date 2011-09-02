@@ -13,10 +13,11 @@ module Yarn
 
     attr_accessor :host, :port, :socket
 
-    def initialize(host,port,output=$stdout)
-      @host = host
-      @port = port
-      $output = output
+    def initialize(options={})
+      options = { output: $stdout, host: '127.0.0.1', :port => 3000 }.merge(options)
+      @host = options[:host]
+      @port = options[:port]
+      $output = options[:output]
     end
 
     def start

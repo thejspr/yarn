@@ -64,8 +64,6 @@ else
   debug = false
 end
 
-server = Yarn::Server.new(
-  Choice.choices[:host], 
-  Choice.choices[:port] 
-)
+options = { host: Choice.choices[:host], port: Choice.choices[:port] }
+server = Yarn::Server.new(options)
 server.start
