@@ -24,16 +24,19 @@ module Yarn
       @session = session
       if parse_request
         prepare_response
+        return_response
+      else
+        raise Exception
       end
 
-      return_response
       close_connection
     end
 
     def parse_request
       begin
-        @request = @parser.run  read_request
-        debug "Parse successful: #{@request}"
+        request = read_request
+        return false if request.empty?
+        @request = @parser.run request
         # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
       rescue Parslet::ParseFailed => e
@@ -58,11 +61,11 @@ module Yarn
       @response[2].each do |line|
         @session.puts line
       end
-      # debug "Sent #{@response[1].size} headers"
+      debug "Sent #{@response[1].size} headers"
     end
 
     def close_connection
-      if @session && !persistent?
+      if @session #&& !persistent?
         @session.close
       else
         # TODO: start some kind of timeout
@@ -75,6 +78,7 @@ module Yarn
         break if line.length <= 2
         input << line
       end
+      debug input.join
       input.join
     end
 
