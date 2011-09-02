@@ -6,7 +6,7 @@ module Yarn
     
     # general rules
 
-    rule(:crlf) { str("\r\n") }
+    rule(:crlf) { str("\r\n") | str("\n") }
 
     rule(:space) { match('\s') }
     

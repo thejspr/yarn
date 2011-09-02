@@ -32,7 +32,7 @@ module Yarn
 
     def parse_request
       begin
-        @request = @parser.run @session.gets
+        @request = @parser.run  read_request
         debug "Parse successful: #{@request}"
         # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
@@ -58,7 +58,7 @@ module Yarn
       @response[2].each do |line|
         @session.puts line
       end
-      # debug "Sent #{@response[1].size} headers and a body of size: #{content_length}"
+      # debug "Sent #{@response[1].size} headers"
     end
 
     def close_connection
@@ -67,6 +67,15 @@ module Yarn
       else
         # TODO: start some kind of timeout
       end
+    end
+
+    def read_request
+      input = []
+      while (line = @session.gets) do
+        break if line.length <= 2
+        input << line
+      end
+      input.join
     end
 
     def persistent?

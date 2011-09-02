@@ -4,7 +4,7 @@ module Yarn
   describe RequestHandler do
 
     before(:each) do
-      @dummy_request = "GET /resource/1 HTTP/1.1\r\n"
+      @dummy_request = "GET /resource/1 HTTP/1.1\r\n "
 
       @session = mock('TCPSocket')
       @session.stub(:gets).and_return(@dummy_request)
@@ -12,21 +12,24 @@ module Yarn
       @handler = RequestHandler.new
       @handler.session = @session
       @handler.stub(:debug,:log).and_return(true) #silence output
+      @handler.stub(:read_request).and_return(@dummy_request)
+    end
+
+    describe "#read_request" do
+      it "should return a string from a feed" do
+        @handler.unstub!(:read_request)
+        @handler.session = StringIO.new
+        @handler.session.string = "line1\nline2\nline3"
+
+        @handler.read_request.should == "line1\nline2\nline3"
+      end
     end
 
     describe "#parse_request" do
       it "should invoke the Parser" do
-        @handler.parser.should_receive(:parse)
+        @handler.parser.should_receive(:run)
 
         @handler.parse_request
-      end
-
-      it "should save the request hash" do
-        @handler.request.should be_nil
-
-        @handler.parse_request
-
-        @handler.request.should_not be_nil
       end
 
       it "should set the bad-request header if parsing fails" do
@@ -50,15 +53,13 @@ module Yarn
 
     describe "#persistent?" do
       it "should return true if the Connection header is set to keep-alive" do
-        @handler.parse_request
-        @handler.request[:headers]["Connection"] = "keep-alive"
+        @handler.request = { headers: { "Connection" => "keep-alive" } }
         
         @handler.persistent?.should be_true
       end
 
       it "should return false if the Connection header is set to close" do
-        @handler.parse_request
-        @handler.request[:headers]["Connection"] = "close"
+        @handler.request = { headers: { "Connection" => "close" } }
 
         @handler.persistent?.should be_false
       end

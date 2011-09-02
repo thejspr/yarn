@@ -60,6 +60,7 @@ module Yarn
         result = @parser.run(request)
 
         result[:headers]["Content-Length"].should == "345"
+        puts result
       end
 
       it "parses a Cookie header" do
