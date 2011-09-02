@@ -5,3 +5,4 @@ test_objects/rdoc/*
 Gemfile.lock
 pkg/*
 *.rbc
+doc/*
