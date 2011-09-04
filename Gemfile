@@ -21,4 +21,6 @@ gem 'nokogiri'
 #documentation: http://rtomayko.github.com/rocco/rocco.html
 gem 'rocco'
 
+# development gems
+gem 'pry'
 # gem 'ruby-debug'
