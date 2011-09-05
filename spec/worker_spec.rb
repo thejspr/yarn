@@ -1,17 +1,23 @@
 require 'spec_helper'
 
 module Yarn
-
   describe Worker do
     describe "#new" do
-      it "should accept a block and executes it" do
-        @executed = false
-
-        worker = Worker.new {
-          @executed = true
-        }
+      it "should accept a handler and store it" do
+        handler = StaticHandler.new
+        worker = Worker.new handler
         
-        @executed.should be_true
+        worker.handler.should == handler
+      end
+    end
+
+    describe "#process" do
+      it "should execute the handler with the supplied session" do
+        handler = StaticHandler.new
+        handler.stub(:run).and_return(:response)
+        worker = Worker.new handler
+        
+        worker.process("test").should == :response
       end
     end
 

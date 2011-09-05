@@ -10,8 +10,10 @@ module Yarn
 
     describe "#log" do
       it "should make the logging methods available" do
-        Server.new.should respond_to(:log)
-        Server.new.should respond_to(:debug)
+        @server = Server.new
+        @server.should respond_to(:log)
+        @server.should respond_to(:debug)
+        @server.socket.close
       end
 
       it "should be available in the handler classes" do

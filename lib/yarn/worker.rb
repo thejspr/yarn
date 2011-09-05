@@ -1,12 +1,18 @@
-require 'celluloid'
+# require 'celluloid'
 
 module Yarn
   class Worker
 
-    include Celluloid
+    # include Celluloid
 
-    def initialize(&block)
-      block.call
+    attr_reader :handler
+
+    def initialize(handler)
+      @handler = handler
+    end
+
+    def process(session)
+      @handler.run session
     end
 
   end

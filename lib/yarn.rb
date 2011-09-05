@@ -1,6 +1,7 @@
 require "yarn/version"
 require "yarn/request_handler"
 require "yarn/static_handler"
+require 'yarn/worker_pool'
 require "yarn/logging"
 
 require 'socket'
@@ -14,28 +15,41 @@ module Yarn
     attr_accessor :host, :port, :socket
 
     def initialize(options={})
-      options = { output: $stdout, host: '127.0.0.1', :port => 3000 }.merge(options)
+      defaults = { 
+        output: $stdout, 
+        host: '127.0.0.1', 
+        port: 3000, 
+        pool_size: 5 
+      }
+
+      options = defaults.merge(options)
+
       @host = options[:host]
       @port = options[:port]
+      @socket = TCPServer.new(@host, @port)
+      log "Yarn started and accepting requests on #{@host}:#{@port}"
+
+      @pool = WorkerPool.new(options[:pool_size])
       $output = options[:output]
     end
 
     def start
-      @socket = TCPServer.new(@host, @port)
-
-      log "Yarn started and accepting requests on #{@host}:#{@port}"
-
-      begin
-        while( session = @socket.accept ) do
+      @socket_listener = Thread.new do
+        loop do
           begin
-          handler = StaticHandler.new
-          handler.run session
+            session = @socket.accept
+            Thread.new { StaticHandler.new.run session }
+            # @pool.schedule { StaticHandler.new.run session }
           rescue Exception => e
+            session.close
             log e.message
             log e.backtrace
-            session.close
           end
         end
+      end
+
+      begin
+        @socket_listener.join
       rescue Interrupt => e
         log "Caught interrupt, stopping..."
       ensure
@@ -44,8 +58,9 @@ module Yarn
     end
 
     def stop
-      @socket.close unless @socket.nil?
+      @socket.close if @socket
       @socket = nil
+      @socket_listener.kill if @socket_listener
 
       log "Server stopped"
     end
