@@ -21,7 +21,6 @@ module Yarn
       @response[0] = 200
       @response[2] << read_file(path)
       @response[1]["Content-Type"] = get_mime_type path
-      debug "Static request: 200 #{path}"
     end
 
     def serve_directory(path)
@@ -29,19 +28,16 @@ module Yarn
       if File.exists?("index.html") || File.exists?("/index.html")
         @response[2] = read_file "index.html"
         @response[1]["Content-Type"] = "text/html"
-        debug "Static request: 200 #{path} (index.html)"
       else
         @response[1]["Content-Type"] = "text/html"
         directory_lister = DirectoryLister.new
         @response[2] << directory_lister.list(path)
-        debug "Static request: 200 #{path} (directory)"
       end
     end
 
     def serve_404_page(path)
       @response[0] = 404
       @response[2] = [error_message]
-      debug "Static request: 404 #{path} (file/folder not found)"
     end
 
     def read_file(path)
@@ -73,21 +69,21 @@ module Yarn
       filetype = path.split('.').last
 
       return case
-    when ["html", "htm"].include?(filetype)
-      "text/html"
-    when "txt" == filetype 
-      "text/plain"
-    when "css" == filetype
-      "text/css"
-    when "js" == filetype
-      "text/javascript"
-    when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
-      "image/#{filetype}"
-    when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
-      "application/#{filetype}"
-    else false
+        when ["html", "htm"].include?(filetype)
+          "text/html"
+        when "txt" == filetype 
+          "text/plain"
+        when "css" == filetype
+          "text/css"
+        when "js" == filetype
+          "text/javascript"
+        when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
+          "image/#{filetype}"
+        when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
+          "application/#{filetype}"
+        else false
+      end
     end
-  end
 
-end
+  end
 end

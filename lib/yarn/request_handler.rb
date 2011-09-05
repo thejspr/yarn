@@ -37,7 +37,6 @@ module Yarn
         request = read_request
         return false if request.empty?
         @request = @parser.run request
-        # log "#{@request[:method]} #{@request[:path]} HTTP/#{@request[:version]}" 
         true
       rescue Parslet::ParseFailed => e
         @response[0] = 400
@@ -61,7 +60,6 @@ module Yarn
       @response[2].each do |line|
         @session.puts line
       end
-      debug "Sent #{@response[1].size} headers"
     end
 
     def close_connection
@@ -78,7 +76,6 @@ module Yarn
         break if line.length <= 2
         input << line
       end
-      debug input.join
       input.join
     end
 
