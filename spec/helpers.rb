@@ -21,15 +21,19 @@ module Helpers
   end
 
   def stop_server
-    @thread.kill
-    @server.stop
+    @thread.kill if @thread
+    @server.stop if @server
   end
 
-  def start_server(port=3000)
+  def start_server(port=3000,handler=:static)
     $console = MockIO.new
-    @server = Yarn::Server.new({ port: port, output: $console })
+    @server = Yarn::Server.new({ port: port, output: $console, handler: handler })
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
+  end
+  
+  def mock_request(filename="/")
+    MockIO.new("GET #{filename} HTTP/1.1\n")
   end
 
   private
@@ -41,8 +45,9 @@ module Helpers
 end
 
 class MockIO
-  def initialize
-    @contents = []
+  def initialize(content="")
+    @contents ||= []
+    @contents << content
   end
 
   def puts(string)

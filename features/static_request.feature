@@ -5,7 +5,7 @@ Feature: Static file requests
   To provide fast content on the Internet
 
   Background:
-    Given the server is running as static
+    Given the server is running as "static"
 
   Scenario: Serve a static html file
     Given the file "index.html" exist

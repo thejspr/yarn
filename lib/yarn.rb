@@ -1,6 +1,7 @@
 require "yarn/version"
 require "yarn/request_handler"
 require "yarn/static_handler"
+require "yarn/dynamic_handler"
 require 'yarn/worker_pool'
 require "yarn/logging"
 
@@ -12,25 +13,25 @@ module Yarn
 
     include Logging
 
-    attr_accessor :host, :port, :socket
+    attr_accessor :host, :port, :socket, :socket_listener, :handler
 
     def initialize(options={})
-      defaults = { 
+      # merge given options with default values
+      options = { 
+        handler: :static,
         output: $stdout, 
         host: '127.0.0.1', 
         port: 3000, 
         pool_size: 5 
-      }
+      }.merge(options)
 
-      options = defaults.merge(options)
-
+      $output = options[:output]
       @host = options[:host]
       @port = options[:port]
+      @handler = set_handler(options[:handler])
       @socket = TCPServer.new(@host, @port)
-      log "Yarn started and accepting requests on #{@host}:#{@port}"
 
-      @pool = WorkerPool.new(options[:pool_size])
-      $output = options[:output]
+      log "Yarn started as #{options[:handler]} and accepting requests on #{@host}:#{@port}"
     end
 
     def start
@@ -38,8 +39,7 @@ module Yarn
         loop do
           begin
             session = @socket.accept
-            Thread.new { StaticHandler.new.run session }
-            # @pool.schedule { StaticHandler.new.run session }
+            Thread.new { @handler.new.run session }
           rescue Exception => e
             session.close
             log e.message
@@ -63,6 +63,15 @@ module Yarn
       @socket_listener.kill if @socket_listener
 
       log "Server stopped"
+    end
+
+    def set_handler(handler_symbol)
+      handler =  case handler_symbol
+                 when :static then StaticHandler
+                 when :dynamic then DynamicHandler
+                 else
+                   raise Exception
+                 end
     end
 
   end

@@ -10,7 +10,7 @@ module Yarn
 
     describe "#log" do
       it "should make the logging methods available" do
-        @server = Server.new
+        @server = Server.new(output: $output)
         @server.should respond_to(:log)
         @server.should respond_to(:debug)
         @server.socket.close

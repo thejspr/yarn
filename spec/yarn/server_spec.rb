@@ -7,6 +7,22 @@ module Yarn
       stop_server
     end
 
+    describe "#new" do
+      it "should set the handler type for static files" do
+        server = Server.new(handler: :static)
+
+        server.handler.class.should == StaticHandler.class
+        server.stop
+      end
+
+      it "should set the handler type for dynamic files" do
+        server = Server.new(handler: :dynamic)
+
+        server.handler.class.should == DynamicHandler.class
+        server.stop
+      end
+    end
+
     describe "#start" do
       it "creates a TCP server" do
         start_server
