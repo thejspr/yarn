@@ -25,13 +25,12 @@ module Yarn
 
     def serve_directory(path)
       @response[0] = 200
-      if File.exists?("index.html") || File.exists?("/index.html")
+      if File.exists?("index.html")# || File.exists?("/index.html")
         @response[2] = read_file "index.html"
         @response[1]["Content-Type"] = "text/html"
       else
         @response[1]["Content-Type"] = "text/html"
-        directory_lister = DirectoryLister.new
-        @response[2] << directory_lister.list(path)
+        @response[2] << DirectoryLister.list(path)
       end
     end
 

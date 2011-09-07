@@ -22,12 +22,11 @@ Given /^the server is not running$/ do
 end
 
 Given /^the file "([^"]*)" exist$/ do |file|
-  f = File.new File.join(File.join(File.dirname(__FILE__), "/../../"), "test_objects/#{file}")
-  File.exists?(f).should be_true
+  testfile_exists?(file).should be_true
 end
 
 Given /^the file "([^"]*)" does not exist$/ do |file|
-  File.exists?(File.join(File.join(File.dirname(__FILE__), "/../../"), "test_objects/#{file}")).should be_false
+  testfile_exists?(file).should be_false
 end
 
 When /^I log "([^"]*)"$/ do |message|

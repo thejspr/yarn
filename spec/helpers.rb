@@ -17,7 +17,7 @@ module Helpers
 
   def post(url, params={})
     setup
-    @connection.post url
+    @connection.post url, params
   end
 
   def stop_server
@@ -31,11 +31,21 @@ module Helpers
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
   end
-  
-  def mock_request(filename="/")
-    MockIO.new("GET #{filename} HTTP/1.1\n")
+
+
+  def testfile_exists?(filename)
+    File.exists? File.join(File.join(File.dirname(__FILE__), "/../"), "test_objects/#{filename}")
   end
 
+  def valid_html?(response)
+    begin
+      lambda { Nokogiri::HTML(response) { |config| config.strict } }
+    rescue Nokogiri::HTML::SyntaxError
+      false
+    else
+      true
+    end
+  end
   private
 
   def setup

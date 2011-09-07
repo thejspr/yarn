@@ -5,7 +5,7 @@ module Yarn
 
     include Logging
 
-    def list(path)
+    def self.list(path)
       response = []
       response << <<-EOS
 <html><head><title>Directory Listing</title></head><body><h1>Directory Listing</h1><table cellpadding='4'><thead><td><b>Filename</b></td><td><b>Size</b></></thead><tbody>
@@ -49,7 +49,7 @@ module Yarn
       return response
     end
 
-    def format_size(size)
+    def self.format_size(size)
       count = 0
       while  size >= 1024 and count < 4
         size /= 1024.0

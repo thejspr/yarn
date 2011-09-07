@@ -5,21 +5,18 @@ module Yarn
 
     after(:each) do
       stop_server
+      @server.stop if @server
     end
 
     describe "#new" do
       it "should set the handler type for static files" do
-        server = Server.new(handler: :static)
-
-        server.handler.class.should == StaticHandler.class
-        server.stop
+        @server = Server.new(handler: :static)
+        @server.handler.class.should == StaticHandler.class
       end
 
       it "should set the handler type for dynamic files" do
-        server = Server.new(handler: :dynamic)
-
-        server.handler.class.should == DynamicHandler.class
-        server.stop
+        @server = Server.new(handler: :dynamic)
+        @server.handler.class.should == DynamicHandler.class
       end
     end
 
@@ -30,7 +27,7 @@ module Yarn
       end
 
       it "starts on the supplied port" do
-        start_server(4000)
+        @server = Server.new(port: 4000)
 
         @server.socket.addr.should include(4000)
       end
@@ -38,7 +35,7 @@ module Yarn
 
     describe "#stop" do
       it "notifies the server is stopped" do
-        start_server
+        @server = Server.new
         @server.stop
 
         $console.should include("Server stopped")

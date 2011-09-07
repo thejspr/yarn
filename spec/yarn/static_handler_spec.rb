@@ -20,27 +20,17 @@ module Yarn
     end
 
     describe "#prepare_response" do
-      it "returns a directory listing if index.html does not exist" do
+      it "should handle a directory" do
         File.delete("index.html")
         Dir.mkdir("testdir")
         @handler.stub(:extract_path).and_return("testdir")
-
-        @handler.should_receive(:serve_directory).once
-        @handler.prepare_response
-      end
-
-      it "returns the index.html file if it exists" do
-        @handler.stub(:extract_path).and_return(Dir.pwd)
-
         @handler.should_receive(:serve_directory).once
         @handler.prepare_response
       end
 
       it "returns a file if it exists" do
-        @file_content = "<html><body>success!</body></html>"
         @file = File.new("test.html", "w")
         @handler.stub(:extract_path).and_return("test.html")
-
         @handler.should_receive(:serve_file).once
         @handler.prepare_response
       end
@@ -48,7 +38,6 @@ module Yarn
       it "handles missing files" do
         @handler.stub(:extract_path).and_return("non-existing.html")
         @handler.should_receive(:serve_404_page).once
-
         @handler.prepare_response
       end
     end
@@ -65,15 +54,12 @@ module Yarn
         Dir.mkdir("test")
         File.new("test/index.html", "w")
         @handler.should_receive(:read_file).once
-
         @handler.serve_directory("test")
       end
 
       it "should list a directory" do
-        directory_lister_mock = mock('DirectoryLister')
-        DirectoryLister.stub(:new).and_return(directory_lister_mock)
-        directory_lister_mock.stub(:list).and_return([])
-        File.rename("index.html","non-index.html")
+        File.delete "index.html"
+        DirectoryLister.should_receive(:list).once
         @handler.serve_directory(Dir.pwd)
       end
     end
