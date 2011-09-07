@@ -1,13 +1,15 @@
 $LOAD_PATH << File.expand_path('../../../lib', __FILE__)
 
 require 'rubygems'
-require 'simplecov'
 require 'fakefs'
 
-SimpleCov.start do
-  FakeFS.deactivate!
-  add_filter "/spec/"
-  add_filter "lib/yarn/http*"
+unless /jruby/ =~ `ruby -v`
+  require 'simplecov'
+  SimpleCov.start do
+    FakeFS.deactivate!
+    add_filter "/spec/"
+    add_filter "lib/yarn/http*"
+  end
 end
 
 require 'bundler/setup'
