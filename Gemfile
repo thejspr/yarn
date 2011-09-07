@@ -3,17 +3,13 @@ source "http://rubygems.org"
 # Specify your gem's dependencies in threaded_server.gemspec
 gemspec
 
-# for generating http.rb
-# gem 'polyglot'
-# gem 'treetop'
-
 # gems for testing
 gem 'simplecov'
 gem 'autotest'
 gem 'fakefs'
 gem 'rspec'
 gem 'cucumber'
-gem 'capybara'#, '~> 1.0'
+gem 'capybara'
 gem 'capybara-webkit'
 gem 'faraday'
 gem 'nokogiri'
