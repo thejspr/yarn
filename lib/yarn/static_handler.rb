@@ -23,22 +23,6 @@ module Yarn
       @response[1]["Content-Type"] = get_mime_type path
     end
 
-    def serve_directory(path)
-      @response[0] = 200
-      if File.exists?("index.html")# || File.exists?("/index.html")
-        @response[2] = read_file "index.html"
-        @response[1]["Content-Type"] = "text/html"
-      else
-        @response[1]["Content-Type"] = "text/html"
-        @response[2] << DirectoryLister.list(path)
-      end
-    end
-
-    def serve_404_page(path)
-      @response[0] = 404
-      @response[2] = [error_message]
-    end
-
     def read_file(path)
       file_contents = []
 

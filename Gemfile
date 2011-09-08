@@ -4,7 +4,6 @@ source "http://rubygems.org"
 gemspec
 
 # gems for testing
-gem 'simplecov'
 gem 'autotest'
 gem 'fakefs'
 gem 'rspec'
@@ -15,8 +14,9 @@ gem 'faraday'
 gem 'nokogiri'
 
 #documentation: http://rtomayko.github.com/rocco/rocco.html
-# gem 'rocco'
+gem 'rocco'
 
 # development gems
 gem 'pry'
+gem 'simplecov'
 # gem 'ruby-debug'
