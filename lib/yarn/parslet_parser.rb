@@ -14,7 +14,7 @@ module Yarn
 
     # header rules
 
-    rule(:header_value) { match['[^\r\n]'].repeat(1) }
+    rule(:header_value) { match['^\r\n'].repeat(1) }
 
     rule(:header_name) { match['a-zA-Z\-'].repeat(1) }
 
@@ -30,17 +30,34 @@ module Yarn
 
     rule(:http_version) { match['HTTP\/\d\.\d'].repeat(1) }
 
-    rule(:absolute_path) { match['\S+'].repeat(1) }
+    rule(:param_value) { match['^&\s+'].repeat(1) }
 
-    rule(:host) { match['[^\/]+'].repeat(1) }
+    rule(:param_key) { match['^=+'].repeat(1) }
+
+    rule(:param) do
+      param_key.as(:key) >>
+      str("=") >>
+      param_value.as(:value) >>
+      str("&").maybe
+    end
+
+    rule(:params_path) do 
+      match['^?+'].repeat(1) >> 
+      str("?") >>
+      param.repeat.as(:params)
+    end
+
+    rule(:path) { params_path | match['\S+'].repeat(1) }
+
+    rule(:host) { match['^\/+'].repeat(1) }
 
     rule(:absolute_uri) do
       str("http://") >> 
       host.as(:host) >> 
-      absolute_path.as(:path)
+      path.as(:path)
     end
 
-    rule(:request_uri) { str('*') | absolute_uri | absolute_path.as(:path) }
+    rule(:request_uri) { str('*') | absolute_uri | path.as(:path) }
 
     rule(:spaces) { match('\s+') }
 
