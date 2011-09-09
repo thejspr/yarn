@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'parslet'
 
+module Parslet::Atoms::DSL; def once; repeat(1); end; end
+
 module Yarn
   class ParsletParser < Parslet::Parser
     
@@ -14,9 +16,9 @@ module Yarn
 
     # header rules
 
-    rule(:header_value) { match['^\r\n'].repeat(1) }
+    rule(:header_value) { match['^\r\n'].once }
 
-    rule(:header_name) { match['a-zA-Z\-'].repeat(1) }
+    rule(:header_name) { match['a-zA-Z\-'].once }
 
     rule(:header) do 
       header_name.as(:name) >> 
@@ -28,40 +30,40 @@ module Yarn
     
     # request-line rules
 
-    rule(:http_version) { match['HTTP\/\d\.\d'].repeat(1) }
+    rule(:http_version) { match['HTTP\/\d\.\d'].once }
 
-    rule(:param_value) { match['^&\s+'].repeat(1) }
+    rule(:param_value) { match['^&\s+'].once }
 
-    rule(:param_key) { match['^=+'].repeat(1) }
+    rule(:param_name) { match['^=+'].once }
 
     rule(:param) do
-      param_key.as(:key) >>
+      param_name.as(:name) >>
       str("=") >>
       param_value.as(:value) >>
       str("&").maybe
     end
 
     rule(:params_path) do 
-      match['^?+'].repeat(1) >> 
+      match['^?+'].once >> 
       str("?") >>
-      param.repeat.as(:params)
+      param.repeat.as(:_process_params).as(:params)
     end
 
-    rule(:path) { params_path | match['\S+'].repeat(1) }
+    rule(:absolute_path) { params_path | match['\S+'].once }
 
-    rule(:host) { match['^\/+'].repeat(1) }
+    rule(:host) { match['^\/+'].once }
 
     rule(:absolute_uri) do
       str("http://") >> 
       host.as(:host) >> 
-      path.as(:path)
+      absolute_path.as(:path)
     end
 
-    rule(:request_uri) { str('*') | absolute_uri | path.as(:path) }
+    rule(:request_uri) { str('*') | absolute_uri | absolute_path.as(:path) }
 
     rule(:spaces) { match('\s+') }
 
-    rule(:method) { match['OPTIONS|GET|HEAD|POST|PUT|DELETE|TRACE|CONNECT'].repeat(1) }
+    rule(:method) { match['OPTIONS|GET|HEAD|POST|PUT|DELETE|TRACE|CONNECT'].once }
 
     # RFC2616: Method SP Request-URI SP HTTP-Version CRLF
     rule(:request_line) do 
@@ -85,11 +87,20 @@ module Yarn
 
     def run(input)
       tree = parse input 
-      Transformer.new.apply tree 
+      tree = ParamsTransformer.new.apply tree 
+      HeadersTransformer.new.apply tree 
     end
   end
 
-  class Transformer < Parslet::Transform
+  class ParamsTransformer < Parslet::Transform
+    rule(:_process_params => subtree(:params)) do
+      hash = {}
+      params.each { |h| hash[h[:name].to_s] = h[:value] }
+      hash
+    end
+  end
+
+  class HeadersTransformer < Parslet::Transform
     rule(:_process_headers => subtree(:headers)) do
       hash = {}
       headers.each { |h| hash[h[:name].to_s] = h[:value].to_s }

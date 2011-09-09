@@ -8,8 +8,8 @@ Feature: Concurrency
     Given the server is running
 
   Scenario: Perform two requests in parallel
-    Given a client "slow"
-    And a client "fast"
-    When client "slow" makes a "slow" request
-    And client "fast" makes a "fast" request
-    Then client "fast" receives a response before client "slow"
+    Given a client "A"
+    And a client "B"
+    When client "A" makes a "slow" request
+    And client "B" makes a "fast" request
+    Then client "B" receives a response before client "A"

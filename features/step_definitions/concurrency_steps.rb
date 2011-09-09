@@ -1,12 +1,18 @@
 Given /^a client "([^"]*)"$/ do |client|
   @clients ||= {}
-  @clients[client] = Thread.new { @response = get "/" }
+  @clients[client] = nil
 end
 
 When /^client "([^"]*)" makes a "([^"]*)" request$/ do |client,speed|
-  pending # express the regexp above with the code you wish you had
+  @clients[client] = Thread.new { @response = get "/#{speed}.rb" }
 end
 
-Then /^client "([^"]*)" receives a response before client "([^"]*)"$/ do |client_1,client2|
-  pending # express the regexp above with the code you wish you had
+Then /^client "([^"]*)" receives a response before client "([^"]*)"$/ do |c1,c2|
+  loop do
+    if @clients[c1].response == "complete"
+      return true
+    elsif @clients[c2].response == "complete"
+      return false
+    end
+  end
 end

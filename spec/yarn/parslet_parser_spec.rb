@@ -52,9 +52,8 @@ module Yarn
     describe "#parse parameters" do
       it "parses parameters in the url" do
         result = @parser.run("GET /page?param1=1&param2=2 HTTP/1.1\n")
-        p result[:uri]
-        result[:params]["param1"].should == 1
-        result[:params]["param2"].should == 2
+        result[:uri][:path][:params]["param1"].should == "1"
+        result[:uri][:path][:params]["param2"].should == "2"
       end
     end
 
