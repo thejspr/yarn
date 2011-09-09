@@ -2,14 +2,19 @@ require 'yarn/parslet_parser'
 require 'yarn/version'
 require 'yarn/statuses'
 require 'yarn/logging'
+require 'yarn/error_page'
 require 'date'
 require 'rubygems'
 require 'parslet'
 
 module Yarn
+
+  class EmptyRequestError < StandardError; end
+
   class RequestHandler
 
     include Logging
+    include ErrorPage
 
     attr_accessor :session, :parser, :request, :response
 
@@ -22,26 +27,27 @@ module Yarn
 
     def run(session)
       @session = session
-      if parse_request
+      begin
+        parse_request
         prepare_response
         return_response
-      else
-        raise Exception
+        log "Served #{client_address} #{request_path}"
+      rescue EmptyRequestError
+        log "Empty request from #{client_address}"
+      ensure
+        close_connection
       end
-
-      close_connection
     end
 
     def parse_request
+      raw_request = read_request
+      raise EmptyRequestError if raw_request.empty?
+
       begin
-        request = read_request
-        return false if request.empty?
-        @request = @parser.run request
-        true
+        @request = @parser.run raw_request
       rescue Parslet::ParseFailed => e
         @response[0] = 400
         debug "Parse failed: #{@request}"
-        false
       end
     end
 
@@ -111,16 +117,6 @@ module Yarn
       end
     end
 
-    def serve_404_page
-      @response[0] = 404
-      @response[2] = [error_message]
-    end
-
-    def serve_500_page
-      @response[0] = 500
-      @response[2] = ["Yarn!?\nA server error occured."]
-    end
-
     def read_file(path)
       file_contents = []
 
@@ -141,10 +137,6 @@ module Yarn
       path.gsub(/%20/, " ").strip
     end
 
-    def error_message
-      "<html><head><title>404</title></head><body><h1>File does not exist.</h1></body><html>"
-    end
-
     def serve_directory(path)
       @response[0] = 200
       if File.exists?("index.html")# || File.exists?("/index.html")
@@ -156,11 +148,12 @@ module Yarn
       end
     end
 
-    def serve_404_page(path)
-      @response[0] = 404
-      @response[2] = [error_message]
+    def request_path
+      @request[:uri][:path] if @request
     end
-
-
+    
+    def client_address
+      @session.peeraddr(:numeric)[2] if @session
+    end
   end
 end

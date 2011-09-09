@@ -67,7 +67,7 @@ module Yarn
 
     describe "#run" do
       it "should call all relevant template methods" do
-        @handler.stub(:parse_request).and_return(true)
+        @handler.stub(:client_address)
         @handler.should_receive(:parse_request).once
         @handler.should_receive(:prepare_response).once
         @handler.should_receive(:return_response).once
@@ -76,13 +76,5 @@ module Yarn
         @handler.run(@dummy_request)
       end
     end
-
-    # describe "#close_connection" do
-    #   it "should close the session connection" do
-    #     @handler.session.should_receive(:close)
-    #     @handler.close_connection
-    #   end 
-    # end
-
   end
 end

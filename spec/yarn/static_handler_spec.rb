@@ -63,13 +63,6 @@ module Yarn
         @handler.serve_directory(Dir.pwd)
       end
     end
-    
-    describe "#serve_404_page" do
-      it "should read the error message" do
-        @handler.should_receive(:error_message).once
-        @handler.serve_404_page("non-existing-index.html")
-      end
-    end
 
     describe "#read_file" do
       it "should return the contents of a file it it exists" do
@@ -114,13 +107,6 @@ module Yarn
         formats.each do |filetype|
           @handler.get_mime_type("file.#{filetype}").should == "application/#{filetype}"
         end
-      end
-    end
-
-    describe "#error_message" do
-      it "should return an html formatted html string" do
-        @handler.error_message.should =~ /<html>/
-        @handler.error_message.should =~ /404/
       end
     end
 
