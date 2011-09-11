@@ -34,12 +34,12 @@ module Yarn
 
       it "should set the bad-request header if parsing fails" do
         bad_request = "BAD Warble warble request"
-        @handler.response[0].should be_nil
+        @handler.response.status.should be_nil
 
         @session.stub(:gets).and_return(bad_request)
         @handler.parse_request
 
-        @handler.response[0].should == 400
+        @handler.response.status.should == 400
       end
     end
 

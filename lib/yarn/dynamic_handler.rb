@@ -1,5 +1,6 @@
-
 module Yarn
+
+  class ProcessingError < StandardError; end
 
   class DynamicHandler < RequestHandler
 
@@ -7,28 +8,35 @@ module Yarn
 
     def prepare_response
       path = extract_path
-      content = read_file path
 
-      @response[1]["Content-Type"] = "text/html"
+      @response.headers["Content-Type"] = "text/html"
 
       begin
         if File.directory? path
           serve_directory path
         elsif File.exists?(path)
-          response = `ruby #{path}`
+          if path =~ /.*\.rb$/
+            @response.body << execute_script(path)
+            @response.status = 200
+          else
+            serve_file(path)
+          end
         else
-          serve_404_page path
+          serve_404_page
         end
-      rescue Exception => e
+      rescue ProcessingError
         log "An error occured processing #{path}"
-        log e.message
-        log e.trace
         serve_500_page
-      else
-        @response[0] = 200
-        @response[2] << response
       end
     end
 
+    def execute_script(path)
+      response = `ruby #{path}`
+      if !! ($?.to_s =~ /1$/)
+        raise ProcessingError
+      else
+        response
+      end
+    end
   end
 end

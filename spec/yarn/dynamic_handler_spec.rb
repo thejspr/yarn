@@ -23,7 +23,15 @@ module Yarn
         handler = DynamicHandler.new
         handler.stub(:extract_path).and_return("app.rb")
         handler.prepare_response 
-        handler.response[2].should include "Success!\n"
+        handler.response.body.should include "Success!\n"
+      end
+
+      it "should should handle interpreter errors" do
+        handler = DynamicHandler.new
+        File.open("app.rb", 'w') { |f| f.write "this resolves in an error" }
+        handler.stub(:extract_path).and_return("app.rb")
+        handler.prepare_response
+        handler.response.status.should == 500
       end
 
     end

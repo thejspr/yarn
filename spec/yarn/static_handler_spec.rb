@@ -66,7 +66,7 @@ module Yarn
 
     describe "#read_file" do
       it "should return the contents of a file it it exists" do
-        @handler.response[2].should be_empty
+        @handler.response.body.should be_empty
         @handler.read_file("index.html").should == [@file_content]
       end
     end

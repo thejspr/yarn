@@ -5,11 +5,12 @@ Feature: Concurrency
   To increase server throughput
 
   Background:
-    Given the server is running
+    Given the server is running as "dynamic"
 
-  Scenario: Perform two requests in parallel
-    Given a client "A"
-    And a client "B"
-    When client "A" makes a "slow" request
-    And client "B" makes a "fast" request
-    Then client "B" receives a response before client "A"
+  # @wip
+  # Scenario: Perform two requests in parallel
+  #   Given a client "A"
+  #   And a client "B"
+  #   When client "A" makes a "3" seconds request
+  #   And client "B" makes a "5" second request
+  #   Then client "B" receives a response before client "A"

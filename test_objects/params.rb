@@ -1,3 +1,3 @@
 #!/bin/usr/env ruby
 
-puts "param was: #{params['x']}"
+puts "param was: #{ARGV[0]}"

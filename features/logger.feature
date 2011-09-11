@@ -2,7 +2,7 @@ Feature: Logger
 
   As a developer
   I want logging functionality
-  To be able to debug and monitor servr usage
+  To be able to debug and monitor server usage
 
   Background:
     Given the server is running

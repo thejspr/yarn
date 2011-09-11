@@ -1,6 +1,7 @@
 require 'yarn/parslet_parser'
 require 'yarn/version'
 require 'yarn/statuses'
+require 'yarn/response'
 require 'yarn/logging'
 require 'yarn/error_page'
 require 'date'
@@ -20,7 +21,7 @@ module Yarn
 
     def initialize
       @parser = ParsletParser.new
-      @response = [ nil, {}, [] ] # [ status, headers, body ]
+      @response = Response.new
 
       set_common_headers
     end
@@ -31,7 +32,7 @@ module Yarn
         parse_request
         prepare_response
         return_response
-        log "Served #{client_address} #{request_path}"
+        log "Served (#{HTTP_STATUS_CODES[@response.status]}) #{client_address} #{request_path}"
       rescue EmptyRequestError
         log "Empty request from #{client_address}"
       ensure
@@ -46,7 +47,7 @@ module Yarn
       begin
         @request = @parser.run raw_request
       rescue Parslet::ParseFailed => e
-        @response[0] = 400
+        @response.status = 400
         debug "Parse failed: #{@request}"
       end
     end
@@ -55,15 +56,15 @@ module Yarn
     end
 
     def return_response
-      @session.puts "HTTP/1.1 #{@response[0]} #{HTTP_STATUS_CODES[@response[0]]}"
+      @session.puts "HTTP/1.1 #{@response.status} #{HTTP_STATUS_CODES[@response.status]}"
 
-      @response[1].each do |key,value|
+      @response.headers.each do |key,value|
         @session.puts "#{key}: #{value}"
       end
 
       @session.puts ""
 
-      @response[2].each do |line|
+      @response.body.each do |line|
         @session.puts line
       end
     end
@@ -90,30 +91,30 @@ module Yarn
     end
 
     def set_common_headers
-      @response[1][:Server] = "Yarn webserver v#{VERSION}"
+      @response.headers[:Server] = "Yarn webserver v#{VERSION}"
 
       # HTTP date format: Fri, 31 Dec 1999 23:59:59 GMT
       time = DateTime.now.new_offset(0)
-      @response[1][:Date] = time.strftime("%a, %d %b %Y %H:%M:%S GMT")
+      @response.headers[:Date] = time.strftime("%a, %d %b %Y %H:%M:%S GMT")
       # Close connection header ( until support for persistent connections )
-      # @response[1][:Connection] = "Close"
+      @response.headers[:Connection] = "Close"
     end
 
     def serve_file(path)
-      @response[0] = 200
-      @response[2] << read_file(path)
-      @response[1]["Content-Type"] = get_mime_type path
+      @response.status = 200
+      @response.body << read_file(path)
+      @response.headers["Content-Type"] = get_mime_type path
     end
 
     def serve_directory(path)
-      @response[0] = 200
+      @response.status = 200
       if File.exists?("index.html") || File.exists?("/index.html")
-        @response[2] = read_file "index.html"
-        @response[1]["Content-Type"] = "text/html"
+        @response.body = read_file "index.html"
+        @response.headers["Content-Type"] = "text/html"
       else
-        @response[1]["Content-Type"] = "text/html"
+        @response.headers["Content-Type"] = "text/html"
         directory_lister = DirectoryLister.new
-        @response[2] << directory_lister.list(path)
+        @response.body << directory_lister.list(path)
       end
     end
 
@@ -138,13 +139,34 @@ module Yarn
     end
 
     def serve_directory(path)
-      @response[0] = 200
+      @response.status = 200
       if File.exists?("index.html")# || File.exists?("/index.html")
-        @response[2] = read_file "index.html"
-        @response[1]["Content-Type"] = "text/html"
+        @response.body = read_file "index.html"
+        @response.headers["Content-Type"] = "text/html"
       else
-        @response[1]["Content-Type"] = "text/html"
-        @response[2] << DirectoryLister.list(path)
+        @response.headers["Content-Type"] = "text/html"
+        @response.body << DirectoryLister.list(path)
+      end
+    end
+
+    def get_mime_type(path)
+      return false unless path.include? '.'
+      filetype = path.split('.').last
+
+      return case
+        when ["html", "htm"].include?(filetype)
+          "text/html"
+        when "txt" == filetype 
+          "text/plain"
+        when "css" == filetype
+          "text/css"
+        when "js" == filetype
+          "text/javascript"
+        when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
+          "image/#{filetype}"
+        when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
+          "application/#{filetype}"
+        else false
       end
     end
 
