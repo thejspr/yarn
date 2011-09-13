@@ -1,0 +1,9 @@
+coverage/*
+test_objects/rdoc/*
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
+*.rbc
+doc/*
+.rvmrc
