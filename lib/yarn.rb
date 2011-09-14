@@ -2,7 +2,8 @@ require "yarn/version"
 require "yarn/request_handler"
 require "yarn/static_handler"
 require "yarn/dynamic_handler"
-require 'yarn/worker_pool'
+require "yarn/rack_handler"
+require "yarn/worker_pool"
 require "yarn/logging"
 
 require 'socket'
@@ -69,6 +70,7 @@ module Yarn
       handler =  case handler_symbol
                  when :static then StaticHandler
                  when :dynamic then DynamicHandler
+                 when :rack then RackHandler
                  else
                    raise Exception
                  end
