@@ -1,9 +1,3 @@
-require 'yarn/parslet_parser'
-require 'yarn/version'
-require 'yarn/statuses'
-require 'yarn/response'
-require 'yarn/logging'
-require 'yarn/error_page'
 require 'date'
 require 'rubygems'
 require 'parslet'
@@ -20,7 +14,7 @@ module Yarn
 
     attr_accessor :session, :parser, :request, :response
 
-    def initialize
+    def initialize(options={})
       @parser = ParsletParser.new
       @response = Response.new
 
@@ -33,7 +27,7 @@ module Yarn
         parse_request
         prepare_response
         return_response
-        log "Served (#{HTTP_STATUS_CODES[@response.status]}) #{client_address} #{request_path}"
+        log "Served (#{STATUS_CODES[@response.status]}) #{client_address} #{request_path}"
       rescue EmptyRequestError
         log "Empty request from #{client_address}"
       ensure
@@ -87,7 +81,7 @@ module Yarn
     end
 
     def return_response
-      @session.puts "HTTP/1.1 #{@response.status} #{HTTP_STATUS_CODES[@response.status]}"
+      @session.puts "HTTP/1.1 #{@response.status} #{STATUS_CODES[@response.status]}"
 
       @response.headers.each do |key,value|
         @session.puts "#{key}: #{value}"
