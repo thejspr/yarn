@@ -13,7 +13,7 @@ module Yarn
 
     include Logging
 
-    attr_accessor :host, :port, :socket, :socket_listener, :handler
+    attr_accessor :host, :port, :socket, :socket_listener
 
     def initialize(options={})
       # merge given options with default values
@@ -28,7 +28,6 @@ module Yarn
       $output = options[:output]
       @host = options[:host]
       @port = options[:port]
-      @handler = set_handler(options[:handler])
       @socket = TCPServer.new(@host, @port)
 
       log "Yarn started as #{options[:handler]} and accepting requests on #{@host}:#{@port}"
@@ -63,15 +62,6 @@ module Yarn
       @socket_listener.kill if @socket_listener
 
       log "Server stopped"
-    end
-
-    def set_handler(handler_symbol)
-      handler =  case handler_symbol
-                 when :static then StaticHandler
-                 when :dynamic then DynamicHandler
-                 else
-                   raise Exception
-                 end
     end
 
   end

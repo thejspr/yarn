@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency('parslet', '>= 1.2')
-  s.add_dependency('choice', '>= 0.1.4')
+  s.add_dependency('trollop', '>= 1.16.2')
   # s.add_dependency('celluloid', '>= 0.2.1')
 end

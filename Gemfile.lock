@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     yarn (0.0.1)
-      choice (>= 0.1.4)
       parslet (>= 1.2)
+      trollop (>= 1.16.2)
 
 GEM
   remote: http://rubygems.org/
@@ -25,7 +25,6 @@ GEM
       capybara (~> 1.0.0)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
-    choice (0.1.4)
     coderay (0.9.8)
     cucumber (1.0.3)
       builder (>= 2.1.2)
@@ -88,6 +87,7 @@ GEM
     slop (2.1.0)
     spruz (0.2.13)
     term-ansicolor (1.0.6)
+    trollop (1.16.2)
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
