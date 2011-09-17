@@ -43,23 +43,27 @@ module Yarn
       str("&").maybe
     end
 
-    rule(:params_path) do 
-      match['^?+'].once >> 
-      str("?") >>
-      param.repeat.as(:_process_params).as(:params)
+    rule(:query) do
+      match['\S+'].repeat(1)
     end
 
-    rule(:absolute_path) { params_path | match['\S+'].once }
+    rule(:path) do 
+      match['^\?'].repeat(1).as(:path) >> str("?") >> query.as(:query) | match['^\s'].once.as(:path)
+    end
 
-    rule(:host) { match['^\/+'].once }
+    rule(:port) { match['\d+'].repeat(1) }
+
+    rule(:host) { match['^\/:'].once }
 
     rule(:absolute_uri) do
       str("http://") >> 
       host.as(:host) >> 
-      absolute_path.as(:path)
+      str(":").maybe >> 
+      port.as(:port).maybe >>
+      path
     end
 
-    rule(:request_uri) { str('*') | absolute_uri | absolute_path.as(:path) }
+    rule(:request_uri) { str('*') | absolute_uri | path }
 
     rule(:spaces) { match('\s+') }
 

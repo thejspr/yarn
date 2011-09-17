@@ -7,7 +7,6 @@ Feature: Concurrency
   Background:
     Given the server is running as "dynamic"
 
-  @wip
   Scenario: Perform two requests in parallel
     Given a client "A"
     And a client "B"

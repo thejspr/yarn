@@ -2,7 +2,8 @@ require "yarn/version"
 require "yarn/request_handler"
 require "yarn/static_handler"
 require "yarn/dynamic_handler"
-require 'yarn/worker_pool'
+require "yarn/rack_handler"
+require "yarn/worker_pool"
 require "yarn/logging"
 
 require 'socket'

@@ -2,6 +2,8 @@
 module Yarn
   class Response
 
+    attr_accessor :content
+
     def initialize
       @content = [nil, {}, []]      
     end
@@ -28,6 +30,10 @@ module Yarn
 
     def body
       @content[2]
+    end
+
+    def to_s
+      @content
     end
   
   end

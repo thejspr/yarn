@@ -29,7 +29,8 @@ module Yarn
 
       it "parses absolute URI" do
         result = @parser.run("GET http://187.123.231.12:8976/some/resource HTTP/1.1")
-        result[:uri][:host].should == "187.123.231.12:8976"
+        result[:uri][:host].should == "187.123.231.12"
+        result[:uri][:port].should == "8976"
         result[:uri][:path].should == "/some/resource"
       end
 
@@ -50,10 +51,10 @@ module Yarn
     end
 
     describe "#parse parameters" do
-      it "parses parameters in the url" do
+      it "parses query in the url" do
         result = @parser.run("GET /page?param1=1&param2=2 HTTP/1.1\n")
-        result[:uri][:path][:params]["param1"].should == "1"
-        result[:uri][:path][:params]["param2"].should == "2"
+        puts result
+        result[:uri][:query].should == "param1=1&param2=2"
       end
     end
 
