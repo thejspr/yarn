@@ -15,22 +15,20 @@ module Yarn
 
     attr_accessor :host, :port, :socket, :socket_listener
 
-    def initialize(options={})
+    def initialize(opts={})
       # merge given options with default values
       options = { 
-        handler: :static,
         output: $stdout, 
         host: '127.0.0.1', 
-        port: 3000, 
-        pool_size: 5 
-      }.merge(options)
+        port: 3000 
+      }.merge(opts)
 
       $output = options[:output]
       @host = options[:host]
       @port = options[:port]
       @socket = TCPServer.new(@host, @port)
 
-      log "Yarn started as #{options[:handler]} and accepting requests on #{@host}:#{@port}"
+      log "Yarn started #{"w/ Rack " if opts[:rackup_file]}and accepting requests on #{@host}:#{@port}"
     end
 
     def start
@@ -63,6 +61,5 @@ module Yarn
 
       log "Server stopped"
     end
-
   end
 end
