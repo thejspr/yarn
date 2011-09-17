@@ -1,8 +1,7 @@
 require "yarn/version"
 require "yarn/request_handler"
-require "yarn/static_handler"
-require "yarn/dynamic_handler"
 require "yarn/rack_handler"
+require "yarn/directory_lister"
 require "yarn/worker_pool"
 require "yarn/logging"
 
@@ -29,6 +28,8 @@ module Yarn
       @port = options[:port]
       @socket = TCPServer.new(@host, @port)
 
+      @handler = options[:rackup_file] ? RackHandler.new(options) : RequestHandler.new(options)
+
       log "Yarn started #{"w/ Rack " if opts[:rackup_file]}and accepting requests on #{@host}:#{@port}"
     end
 
@@ -37,7 +38,7 @@ module Yarn
         loop do
           begin
             session = @socket.accept
-            Thread.new { @handler.new.run session }
+            Thread.new { @handler.clone.run session }
           rescue Exception => e
             session.close
             log e.message

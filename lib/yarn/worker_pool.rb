@@ -1,5 +1,5 @@
 require 'yarn/worker'
-require 'yarn/static_handler'
+require 'yarn/request_handler'
 require 'yarn/logging'
 
 require 'thread'
