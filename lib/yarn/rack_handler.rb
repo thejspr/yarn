@@ -26,7 +26,7 @@ module Yarn
         "PATH_INFO"         => @request[:uri][:path].to_s,
         "QUERY_STRING"      => @request[:uri][:query].to_s,
         "SERVER_NAME"       => @host || @request[:uri][:host].to_s,
-        "SERVER_PORT"       => @port || @request[:uri][:port].to_s,
+        "SERVER_PORT"       => @port.to_s || @request[:uri][:port].to_s,
         "SCRIPT_NAME"       => "",
         "rack.input"        => StringIO.new("").set_encoding(Encoding::ASCII_8BIT),
         "rack.version"      => Rack::VERSION,
