@@ -15,7 +15,7 @@ module Yarn
       end
 
       it "starts on the supplied port" do
-        @server = Server.new(port: 4000)
+        @server = Server.new(nil,port: 4000)
 
         @server.socket.addr.should include(4000)
       end
@@ -23,7 +23,7 @@ module Yarn
 
     describe "#stop" do
       it "notifies the server is stopped" do
-        @server = Server.new
+        @server = Server.new(nil,{ output: $console })
         @server.stop
 
         $console.should include("Server stopped")

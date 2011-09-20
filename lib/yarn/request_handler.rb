@@ -17,11 +17,11 @@ module Yarn
     def initialize(options={})
       @parser = ParsletParser.new
       @response = Response.new
-
-      set_common_headers
     end
 
     def run(session)
+      @response = Response.new
+      set_common_headers
       @session = session
       begin
         parse_request
@@ -82,11 +82,7 @@ module Yarn
 
     def return_response
       @session.puts "HTTP/1.1 #{@response.status} #{STATUS_CODES[@response.status]}"
-
-      @response.headers.each do |key,value|
-        @session.puts "#{key}: #{value}"
-      end
-
+      @session.puts @response.headers.map { |k,v| "#{k}: #{v}" }
       @session.puts ""
 
       @response.body.each do |line|
@@ -179,28 +175,28 @@ module Yarn
       filetype = path.split('.').last
 
       return case
-        when ["html", "htm"].include?(filetype)
-          "text/html"
-        when "txt" == filetype 
-          "text/plain"
-        when "css" == filetype
-          "text/css"
-        when "js" == filetype
-          "text/javascript"
-        when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
-          "image/#{filetype}"
-        when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
-          "application/#{filetype}"
-        else false
-      end
-    end
-
-    def request_path
-      @request[:uri][:path] if @request
-    end
-    
-    def client_address
-      @session.peeraddr(:numeric)[2] if @session
+    when ["html", "htm"].include?(filetype)
+      "text/html"
+    when "txt" == filetype 
+      "text/plain"
+    when "css" == filetype
+      "text/css"
+    when "js" == filetype
+      "text/javascript"
+    when ["png", "jpg", "jpeg", "gif", "tiff"].include?(filetype)
+      "image/#{filetype}"
+    when ["zip","pdf","postscript","x-tar","x-dvi"].include?(filetype)
+      "application/#{filetype}"
+    else false
     end
   end
+
+  def request_path
+    @request[:uri][:path] if @request
+  end
+
+  def client_address
+    @session.peeraddr(:numeric)[2] if @session
+  end
+end
 end

@@ -20,5 +20,5 @@ EOS
   opt :rackup_file, "Rackup file (e.g. config.ru). If not given Yarn will serve static and dynamic (*.rb) files.", :type => String
 end
 
-server = Yarn::Server.new(opts)
+server = Yarn::Server.new(nil,opts)
 server.start

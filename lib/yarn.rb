@@ -1,4 +1,6 @@
-require 'socket'
+require 'pry'
+require 'rack/handler/yarn'
+require 'rack/handler'
 
 module Yarn
 
@@ -14,5 +16,7 @@ module Yarn
   autoload :STATUS_CODES,     "yarn/statuses"
   autoload :Worker,           "yarn/worker"
   autoload :WorkerPool,       "yarn/worker_pool"
+
+  Rack::Handler.register 'yarn', 'Yarn'
 
 end

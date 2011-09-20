@@ -1,3 +1,5 @@
+require 'socket'
+
 module Yarn
   class Server
 
@@ -5,7 +7,7 @@ module Yarn
 
     attr_accessor :host, :port, :socket, :socket_listener
 
-    def initialize(opts={})
+    def initialize(app=nil,opts={})
       # merge given options with default values
       options = { 
         output: $stdout, 
@@ -13,12 +15,12 @@ module Yarn
         port: 3000 
       }.merge(opts)
 
-      $output = options[:output]
-      @host = options[:host]
-      @port = options[:port]
+      @app = app
+      @host,@port,$output = options[:host], options[:port], options[:output]
+
       @socket = TCPServer.new(@host, @port)
 
-      @handler = options[:rackup_file] ? RackHandler.new(options) : RequestHandler.new(options)
+      @handler = @app ? RackHandler.new(@app, options) : RequestHandler.new(options)
 
       log "Yarn started #{"w/ Rack " if opts[:rackup_file]}and accepting requests on #{@host}:#{@port}"
     end
