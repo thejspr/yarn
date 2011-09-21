@@ -21,11 +21,10 @@ module Yarn
       @socket = TCPServer.new(@host, @port)
 
       @handler = @app ? RackHandler.new(@app, options) : RequestHandler.new(options)
-
-      log "Yarn started #{"w/ Rack " if opts[:rackup_file]}and accepting requests on #{@host}:#{@port}"
+      create_listener
     end
 
-    def start
+    def create_listener
       @socket_listener = Thread.new do
         loop do
           begin
@@ -38,7 +37,10 @@ module Yarn
           end
         end
       end
+    end
 
+    def start
+      log "Yarn started and accepting requests on #{@host}:#{@port}"
       begin
         @socket_listener.join
       rescue Interrupt => e

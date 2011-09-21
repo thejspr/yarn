@@ -4,6 +4,8 @@ require 'pry'
 module Yarn
   class RackHandler < RequestHandler
 
+    attr_accessor :env
+
     def initialize(app, opts)
       super(opts)
       @app = app
@@ -11,8 +13,8 @@ module Yarn
 
     def prepare_response
       begin
-        env = make_env
-        @response.content = @app.call(env)
+        make_env
+        @response.content = @app.call(@env)
       rescue Exception => e
         log e.message
         log e.backtrace
@@ -20,7 +22,7 @@ module Yarn
     end
 
     def make_env
-      env = {
+      @env = {
         "REQUEST_METHOD"    => @request[:method].to_s,
         "PATH_INFO"         => @request[:uri][:path].to_s,
         "QUERY_STRING"      => @request[:uri][:query].to_s,
