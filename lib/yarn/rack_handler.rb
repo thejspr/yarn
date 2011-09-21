@@ -6,7 +6,6 @@ module Yarn
 
     def initialize(app, opts)
       super(opts)
-      @host,@port = opts[:host], opts[:port]
       @app = app
     end
 
@@ -25,8 +24,8 @@ module Yarn
         "REQUEST_METHOD"    => @request[:method].to_s,
         "PATH_INFO"         => @request[:uri][:path].to_s,
         "QUERY_STRING"      => @request[:uri][:query].to_s,
-        "SERVER_NAME"       => @host || @request[:uri][:host].to_s,
-        "SERVER_PORT"       => @port.to_s || @request[:uri][:port].to_s,
+        "SERVER_NAME"       => @request[:uri][:host].to_s,
+        "SERVER_PORT"       => @request[:uri][:port].to_s,
         "SCRIPT_NAME"       => "",
         "rack.input"        => StringIO.new("").set_encoding(Encoding::ASCII_8BIT),
         "rack.version"      => Rack::VERSION,

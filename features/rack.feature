@@ -6,10 +6,10 @@ Feature: Implement rack interface
 
   @wip
   Scenario: Serve a one-file rack application
-    Given I have a rack application "simple_rack.rb"
-    And the server is running as "rack"
+    Given I have a rack application "config.ru"
+    And the rack application "config.ru" is running
     When I go to "/"
-    Then the response should contain "rack works"
+    Then the response should contain "Rack works"
 
   Scenario: Serve a rails application
     Given I have a rails application "rails_test"

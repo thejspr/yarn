@@ -17,6 +17,7 @@ require 'capybara/rspec'
 
 require 'yarn'
 require 'helpers'
+require 'pry'
 
 RSpec.configure do |config|
   config.include Helpers

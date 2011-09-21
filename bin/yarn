@@ -7,9 +7,10 @@ require 'trollop'
 require 'yarn'
 
 opts = Trollop::options do
-  version "Yarn v.#{Yarn::VERSION} 2011 Jesper Kjeldgaard"
+  version "Yarn v#{Yarn::VERSION} 2011 Jesper Kjeldgaard"
   banner <<-EOS
-Yarn v.#{Yarn::VERSION} is a multithreaded webserver written in Ruby 1.9.
+Yarn v#{Yarn::VERSION} is a multithreaded webserver written in Ruby 1.9.2
+To use Yarn to serve Rack applications run: rackup -s Yarn <rackup file (config.ru)>
 
 Usage: yarn [options]
 where [options] are:
@@ -17,7 +18,6 @@ EOS
 
   opt :host, "Hostname or IP address of the server", :default => "127.0.0.1"
   opt :port, "Port number to listen on for incomming requests", :default => 3000
-  opt :rackup_file, "Rackup file (e.g. config.ru). If not given Yarn will serve static and dynamic (*.rb) files.", :type => String
 end
 
 server = Yarn::Server.new(nil,opts)

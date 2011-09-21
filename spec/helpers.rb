@@ -23,6 +23,7 @@ module Helpers
   def stop_server
     @thread.kill if @thread
     @server.stop if @server
+    Process.kill("TERM",@rack_server) if @rack_server
   end
 
   def start_server(port=3000,handler=:static)
@@ -49,8 +50,10 @@ module Helpers
   private
 
   def setup
-    host = URI.parse("http://#{@server.host}:#{@server.port}")
-    @connection ||= Faraday.new(host)
+    host = "127.0.0.1"
+    port = "3000"
+    uri = URI.parse("http://#{host}:#{port}")
+    @connection = Faraday.new(uri)
   end
 end
 
