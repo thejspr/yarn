@@ -1,7 +1,3 @@
-require 'yarn/worker'
-require 'yarn/request_handler'
-require 'yarn/logging'
-
 require 'thread'
 
 module Yarn
@@ -9,27 +5,32 @@ module Yarn
 
     include Logging
 
-    attr_reader :size, :workers
+    attr_reader :size, :workers, :jobs
 
     def initialize(size=1024)
       @size = size
-      @workers = create_pool
       @jobs = Queue.new
+      init_workers
     end
 
-    def create_pool
-      return Array.new(@size) do
+    def init_workers
+      @workers = Array.new(@size) do
         Thread.new do
+          Thread.current[:handler] = RequestHandler.new
+          Thread.stop
           loop do
-            job = @jobs.pop
-            job.call
+            Thread.current[:handler].run @jobs.pop
           end
         end
       end
     end
 
-    def schedule(&block)
-      @jobs << block
+    def listen!
+      @workers.each { |w| w.run }
+    end
+
+    def schedule(session)
+      @jobs << session
     end
 
   end
