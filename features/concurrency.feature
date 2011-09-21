@@ -5,7 +5,7 @@ Feature: Concurrency
   To increase server throughput
 
   Background:
-    Given the server is running as "dynamic"
+    Given the server is running
 
   Scenario: Perform two requests in parallel
     Given a client "A"

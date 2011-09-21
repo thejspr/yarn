@@ -9,11 +9,7 @@ When /^I stop the server$/ do
 end
 
 Given /^the server is running$/ do
-  start_server
-end
-
-Given /^the server is running as "([^"]*)"$/ do |handler_type|
-  start_server(3000, handler_type.to_sym)
+  start_server(3000)
 end
 
 Given /^the server is not running$/ do
