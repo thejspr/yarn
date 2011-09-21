@@ -4,7 +4,6 @@ Feature: Implement rack interface
   I want to have a rack handler
   In order to serve rack applications
 
-  @wip
   Scenario: Serve a one-file rack application
     Given I have a rack application "config.ru"
     And the rack application "config.ru" is running
