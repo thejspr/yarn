@@ -13,8 +13,6 @@ require 'fakefs'
   end
 # end
 
-require 'capybara/rspec'
-
 require 'yarn'
 require 'helpers'
 require 'pry'
