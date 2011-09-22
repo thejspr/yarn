@@ -23,6 +23,13 @@ module Yarn
 
         @server.socket.addr.should include(4000)
       end
+
+      it "should create the worker pool" do
+        @server = Server.new(nil,{ output: $console })
+        @server.worker_pool.class.should == WorkerPool
+        @server.worker_pool.jobs.size.should == 0
+        @server.worker_pool.workers.size.should == 8
+      end
     end
 
     describe "#create_listener" do
@@ -38,6 +45,7 @@ module Yarn
           @server = Server.new(nil,{ output: $console })
           @server.start
         end
+        sleep 1
         get("/").should be_true
         @thread.kill
       end

@@ -14,7 +14,7 @@ module Yarn
 
     attr_accessor :session, :parser, :request, :response
 
-    def initialize(options={})
+    def initialize
       @parser = ParsletParser.new
       @response = Response.new
     end

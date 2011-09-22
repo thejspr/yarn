@@ -5,22 +5,21 @@ module Yarn
 
     include Logging
 
-    attr_accessor :host, :port, :socket, :socket_listener
+    attr_accessor :host, :port, :socket, :socket_listener, :worker_pool
 
     def initialize(app=nil,opts={})
       # merge given options with default values
       options = { 
         output: $stdout, 
         host: '127.0.0.1', 
-        port: 3000 
+        port: 3000,
+        pool_size: 8 
       }.merge(opts)
 
       @app = app
       @host,@port,$output = options[:host], options[:port], options[:output]
-
       @socket = TCPServer.new(@host, @port)
-
-      @handler = @app ? RackHandler.new(@app, options) : RequestHandler.new(options)
+      @worker_pool = WorkerPool.new(options[:pool_size])
       create_listener
     end
 
@@ -28,8 +27,9 @@ module Yarn
       @socket_listener = Thread.new do
         loop do
           begin
+            # waits here until a requests comes in
             session = @socket.accept
-            Thread.new { @handler.clone.run session }
+            @worker_pool.schedule session
           rescue Exception => e
             session.close
             log e.message
@@ -42,6 +42,7 @@ module Yarn
     def start
       log "Yarn started and accepting requests on #{@host}:#{@port}"
       begin
+        @worker_pool.listen!
         @socket_listener.join
       rescue Interrupt => e
         log "Caught interrupt, stopping..."

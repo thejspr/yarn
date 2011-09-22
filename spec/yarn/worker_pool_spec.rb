@@ -10,6 +10,12 @@ module Yarn
         pool.size.should == 2
       end
 
+      it "should accept an optional rack app" do
+        app = mock('app')
+        pool = WorkerPool.new(2,app)
+        pool.app.should == app
+      end
+
       it "should set default size to 1024" do
         pool = WorkerPool.new
         pool.stub(:init_workers)
@@ -24,6 +30,19 @@ module Yarn
       it "should invoke the workers" do
         pool = WorkerPool.new 2
         pool.workers.size.should == 2
+      end
+    end
+
+    describe "#determine_handler" do
+      it "should return a RackHandler if an app is present" do
+        app = mock('app')
+        pool = WorkerPool.new(2,app)
+        pool.determine_handler.class.should == RackHandler
+      end
+      
+      it "should return a RequestHandler if an app is not present" do
+        pool = WorkerPool.new(2)
+        pool.determine_handler.class.should == RequestHandler
       end
     end
 
@@ -43,11 +62,19 @@ module Yarn
         end
       end
 
-      it "should set a handler for each worker thread" do
+      it "should set a RackHandler for each worker thread" do
         pool = WorkerPool.new 2
         sleep 1
         pool.workers.each do |w|
           w[:handler].class.should == RequestHandler
+        end
+      end
+
+      it "should set a RequestHandler for each worker thread" do
+        pool = WorkerPool.new(2,mock('app'))
+        sleep 1
+        pool.workers.each do |w|
+          w[:handler].class.should == RackHandler
         end
       end
     end

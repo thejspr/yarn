@@ -11,5 +11,5 @@ Feature: Concurrency
     Given a client "A"
     And a client "B"
     When client "A" makes a "3" seconds request
-    And client "B" makes a "1" second request
+    And client "B" makes a "0.1" second request
     Then client "B" receives a response before client "A"
