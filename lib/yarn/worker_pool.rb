@@ -37,7 +37,6 @@ module Yarn
 
     def schedule(session)
       @jobs << session
-      log "Job scheduled"
     end
 
   end

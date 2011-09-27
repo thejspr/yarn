@@ -27,7 +27,7 @@ module Yarn
         parse_request
         prepare_response
         return_response
-        log "Served (#{STATUS_CODES[@response.status]}) #{client_address} #{request_path}"
+        log "#{STATUS_CODES[@response.status]} #{client_address} #{request_path}"
       rescue EmptyRequestError
         log "Empty request from #{client_address}"
       ensure
