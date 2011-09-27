@@ -15,7 +15,6 @@ module Yarn
     rule(:spaces) { match('\s+') }
 
     # header rules
-
     rule(:header_value) { match['^\r\n'].once }
 
     rule(:header_name) { match['a-zA-Z\-'].once }
@@ -27,28 +26,18 @@ module Yarn
       header_value.as(:value).maybe >> 
       crlf.maybe 
     end
-    
+
     # request-line rules
-
     rule(:http_version) { match['HTTP\/\d\.\d'].once }
-
-    rule(:param_value) { match['^&\s+'].once }
-
-    rule(:param_name) { match['^=+'].once }
-
-    rule(:param) do
-      param_name.as(:name) >>
-      str("=") >>
-      param_value.as(:value) >>
-      str("&").maybe
-    end
 
     rule(:query) do
       match['\S+'].repeat(1)
     end
 
     rule(:path) do 
-      match['^\?'].repeat(1).as(:path) >> str("?") >> query.as(:query) | match['^\s'].once.as(:path)
+      match['^\?'].repeat(1).as(:path) >> 
+      str("?") >> 
+      query.as(:query) | match['^\s'].once.as(:path)
     end
 
     rule(:port) { match['\d+'].repeat(1) }
@@ -78,11 +67,16 @@ module Yarn
       http_version.as(:version) >> 
       crlf.maybe 
     end
+     
+    # body rule
+    rule(:body) { match['\S'].once }
 
     # RFC2616: Request-Line *(( header ) CRLF) CRLF [ message-body ]
     rule(:request) do 
       request_line >> 
       header.repeat.as(:_process_headers).as(:headers) >> 
+      crlf.maybe >>
+      body.as(:body).maybe >>
       crlf.maybe
     end
 
@@ -91,16 +85,7 @@ module Yarn
 
     def run(input)
       tree = parse input 
-      tree = ParamsTransformer.new.apply tree 
       HeadersTransformer.new.apply tree 
-    end
-  end
-
-  class ParamsTransformer < Parslet::Transform
-    rule(:_process_params => subtree(:params)) do
-      hash = {}
-      params.each { |h| hash[h[:name].to_s] = h[:value] }
-      hash
     end
   end
 
