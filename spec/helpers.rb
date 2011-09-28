@@ -29,6 +29,7 @@ module Helpers
   def start_server(port=3000,opts={})
     $console ||= MockIO.new
     @server = Yarn::Server.new(nil,{ port: port, output: $console })
+    sleep 0.5
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
   end

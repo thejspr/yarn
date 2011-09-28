@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency('rack', '>= 1.3.3')
 
   s.add_development_dependency 'cucumber'
-  s.add_development_dependency 'patron'
+  s.add_development_dependency 'faraday'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'fakefs'

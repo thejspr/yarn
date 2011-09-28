@@ -45,7 +45,7 @@ module Yarn
           @server = Server.new(nil,{ output: $console })
           @server.start
         end
-        sleep 1
+        sleep 2
         get("/").should be_true
         @thread.kill
       end
