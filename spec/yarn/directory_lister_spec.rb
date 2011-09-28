@@ -5,10 +5,6 @@ module Yarn
 
   describe DirectoryLister do
 
-    before(:each) do
-      FakeFS.deactivate!
-    end
-
     describe "#list" do
       it "returns valid HTML for a directory" do
         response = DirectoryLister.list("lib")
@@ -17,7 +13,6 @@ module Yarn
       end
 
       it "returns valid HTML a long path" do
-        FakeFS.deactivate!
         response = DirectoryLister.list("lib/yarn")
         response.should_not be_nil
         valid_html?(response).should be_true

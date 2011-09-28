@@ -13,13 +13,13 @@ module Yarn
         output: $stdout, 
         host: '127.0.0.1', 
         port: 3000,
-        pool_size: 8 
+        workers: 32 
       }.merge(opts)
 
       @app = app
       @host,@port,$output = options[:host], options[:port], options[:output]
       @socket = TCPServer.new(@host, @port)
-      @worker_pool = WorkerPool.new(options[:pool_size])
+      @worker_pool = WorkerPool.new(options[:workers])
       create_listener
     end
 

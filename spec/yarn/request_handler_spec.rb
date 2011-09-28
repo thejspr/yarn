@@ -86,22 +86,23 @@ module Yarn
         @handler = RequestHandler.new
         @handler.session = @session
 
-        FakeFS.activate!
         @file_content = "<html><body>success!</body></html>"
         @file = File.open("index.html", 'w') do |file|
           file.write @file_content
         end
+        Dir.mkdir("testdir") unless Dir.exists?("testdir")
       end
 
       after(:each) do
         @handler.close_connection
-        FakeFS.deactivate!
+        File.delete("index.html") if File.exists?("index.html")
+        File.delete("testdir/index.html") if File.exists?("testdir/index.html")
+        Dir.delete("testdir") if Dir.exists?("testdir")
       end
 
       describe "#prepare_response" do
         it "should handle a directory" do
           File.delete("index.html")
-          Dir.mkdir("testdir")
           @handler.stub(:extract_path).and_return("testdir")
           @handler.should_receive(:serve_directory).once
           @handler.prepare_response
@@ -130,10 +131,9 @@ module Yarn
 
       describe "#serve_directory" do
         it "should read index file if it exists" do
-          Dir.mkdir("test")
-          File.new("test/index.html", "w")
+          File.new("testdir/index.html", "w")
           @handler.should_receive(:read_file).once
-          @handler.serve_directory("test")
+          @handler.serve_directory("testdir")
         end
 
         it "should list a directory" do

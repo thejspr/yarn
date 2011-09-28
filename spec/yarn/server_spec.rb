@@ -28,7 +28,7 @@ module Yarn
         @server = Server.new(nil,{ output: $console })
         @server.worker_pool.class.should == WorkerPool
         @server.worker_pool.jobs.size.should == 0
-        @server.worker_pool.workers.size.should == 8
+        @server.worker_pool.workers.size.should == 32
       end
     end
 
