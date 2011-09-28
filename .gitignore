@@ -1,3 +1,4 @@
+tags
 coverage/*
 test_objects/rdoc/*
 *.gem

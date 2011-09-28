@@ -21,13 +21,10 @@ Gem::Specification.new do |s|
   s.add_dependency('parslet', '>= 1.2')
   s.add_dependency('trollop', '>= 1.16.2')
   s.add_dependency('rack', '>= 1.3.3')
-  # s.add_dependency('celluloid', '>= 0.2.1')
 
   s.add_development_dependency 'cucumber'
-  s.add_development_dependency 'faraday'
+  s.add_development_dependency 'patron'
   s.add_development_dependency 'nokogiri'
-  # s.add_development_dependency 'capybara'
-  # s.add_development_dependency 'capybara-webkit'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'fakefs'
   s.add_development_dependency 'simplecov'
