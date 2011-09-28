@@ -113,6 +113,7 @@ module Yarn
           @handler.stub(:extract_path).and_return("test.html")
           @handler.should_receive(:serve_file).once
           @handler.prepare_response
+          File.delete("test.html")
         end
 
         it "handles missing files" do
@@ -144,7 +145,7 @@ module Yarn
       end
 
       describe "#read_file" do
-        it "should return the contents of a file it it exists" do
+        it "should return the contents of a file" do
           @handler.response.body.should be_empty
           @handler.read_file("index.html").should == [@file_content]
         end
