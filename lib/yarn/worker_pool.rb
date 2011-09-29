@@ -11,6 +11,7 @@ module Yarn
       @size = size
       @app = app
       @jobs = Queue.new
+      @mutex = Mutex.new
       init_workers
     end
 
@@ -20,14 +21,18 @@ module Yarn
           Thread.current[:handler] = determine_handler
           Thread.stop
           loop do
-            Thread.current[:handler].run @jobs.pop
+            if job = @jobs.pop
+              debug "Run: #{job}"
+              Thread.current[:handler].run job
+            end
           end
         end
       end
     end
 
     def determine_handler
-      @handler ||= @app ? RackHandler.new(@app) : RequestHandler.new
+      app = @app #Marshal.load(Marshal.dump(@app))
+      @handler ||= @app ? RackHandler.new(app) : RequestHandler.new
     end
 
     def listen!
@@ -36,6 +41,7 @@ module Yarn
 
     def schedule(session)
       @jobs << session
+      debug "Job scheduled, size: #{@jobs.size}"
     end
 
   end

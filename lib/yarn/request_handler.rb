@@ -24,13 +24,16 @@ module Yarn
       @session = session
       begin
         parse_request
+        debug "Request parsed, path: #{request_path}"
         prepare_response
+        debug "Response prepared: #{@response.status}"
         return_response
         log "#{STATUS_CODES[@response.status]} #{client_address} #{request_path}"
       rescue EmptyRequestError
         log "Empty request from #{client_address}"
       ensure
         close_connection
+        debug "Connection closed"
       end
     end
 
@@ -103,6 +106,7 @@ module Yarn
         break if line.length <= 2
         input << line
       end
+      debug "Done reading request"
       input.join
     end
 

@@ -29,6 +29,8 @@ module Yarn
           begin
             # waits here until a requests comes in
             session = @socket.accept
+            debug "Accepted request"
+            # Thread.new { (@app ? RackHandler.new(@app) : RequestHandler.new).run session }
             @worker_pool.schedule session
           rescue Exception => e
             session.close

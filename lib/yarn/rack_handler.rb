@@ -9,7 +9,7 @@ module Yarn
     def initialize(app)
       @parser = ParsletParser.new
       @response = Response.new
-      @app = app# ? app.clone : app
+      @app = app
     end
 
     def prepare_response
@@ -34,7 +34,7 @@ module Yarn
         "rack.version"      => Rack::VERSION,
         "rack.errors"       => $output,
         "rack.multithread"  => true,
-        "rack.multiprocess" => false,
+        "rack.multiprocess" => true,
         "rack.run_once"     => false,
         "rack.url_scheme"   => "http"
       }
