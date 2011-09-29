@@ -20,7 +20,6 @@ module Yarn
     end
 
     def run(session)
-      @response = Response.new
       set_common_headers
       @session = session
       begin

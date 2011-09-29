@@ -9,7 +9,7 @@ module Yarn
     def initialize(app)
       @parser = ParsletParser.new
       @response = Response.new
-      @app = app
+      @app = app# ? app.clone : app
     end
 
     def prepare_response

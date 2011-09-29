@@ -27,8 +27,7 @@ module Yarn
     end
 
     def determine_handler
-      handler ||= @app.nil? ? RequestHandler.new : RackHandler.new(@app)
-      handler
+      @handler ||= @app ? RackHandler.new(@app) : RequestHandler.new
     end
 
     def listen!

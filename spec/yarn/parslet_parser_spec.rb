@@ -56,6 +56,13 @@ module Yarn
         puts result
         result[:uri][:query].should == "param1=1&param2=2"
       end
+
+      it "should parse query on rails assets" do
+        result = @parser.run("GET assets/application.js?body=0 HTTP/1.1\n")
+        puts result
+        result[:uri][:query].should == "body=0"
+        result[:uri][:path].should == "assets/application.js"
+      end
     end
 
     describe "#parse headers" do

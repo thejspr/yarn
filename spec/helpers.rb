@@ -12,7 +12,11 @@ module Helpers
 
   def get(url)
     setup
-    @connection.get "test_objects#{url}"
+    if url == ""
+      @connection.get "/"
+    else
+      @connection.get "test_objects#{url}"
+    end
   end
 
   def post(url, params={})

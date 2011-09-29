@@ -19,7 +19,7 @@ module Yarn
       @app = app
       @host,@port,$output = options[:host], options[:port], options[:output]
       @socket = TCPServer.new(@host, @port)
-      @worker_pool = WorkerPool.new(options[:workers])
+      @worker_pool = WorkerPool.new(options[:workers], @app)
       create_listener
     end
 
