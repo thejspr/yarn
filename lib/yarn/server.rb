@@ -24,14 +24,20 @@ module Yarn
     end
 
     def create_listener
+      threads = []
+      counter = 0
       @socket_listener = Thread.new do
         loop do
           begin
             # waits here until a requests comes in
             session = @socket.accept
-            Thread.new { (@app ? RackHandler.new(@app) : RequestHandler.new).run session }
-            # @worker_pool.schedule session
-            # @worker_pool.listen!
+            threads << Thread.new { 
+              (@app ? RackHandler.new(@app) : RequestHandler.new).run session 
+            }
+            counter += 1
+            if count % 10 == 0
+              debug "Thread count: #{threads.size}"
+            end
           rescue Exception => e
             session.close
             log e.message
