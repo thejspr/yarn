@@ -10,7 +10,7 @@ module Yarn
 
     describe "#log" do
       it "should make the logging methods available" do
-        @server = Server.new(output: $output)
+        @server = Server.new(output: $output, debug: true)
         @server.should respond_to(:log)
         @server.should respond_to(:debug)
         @server.socket.close
@@ -41,6 +41,7 @@ module Yarn
 
     describe "#debug" do
       it "should invoke the log method with a message" do
+        $debug = true
         test_logger = TestLoggging.new
         test_logger.should_receive(:log).with("DEBUG: testing").once
 

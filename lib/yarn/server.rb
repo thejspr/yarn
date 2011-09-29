@@ -7,19 +7,20 @@ module Yarn
 
     attr_accessor :host, :port, :socket, :socket_listener, :worker_pool
 
-    def initialize(app=nil,opts={})
+    def initialize(app=nil,options={})
       # merge given options with default values
-      options = { 
+      opts = { 
         output: $stdout, 
         host: '127.0.0.1', 
         port: 3000,
         workers: 32 
-      }.merge(opts)
+      }.merge(options)
 
       @app = app
-      @host,@port,$output = options[:host], options[:port], options[:output]
+      @host, @port = opts[:host], opts[:port]
+      $output, $debug = opts[:output], opts[:debug]
       @socket = TCPServer.new(@host, @port)
-      @worker_pool = WorkerPool.new(options[:workers], @app)
+      @worker_pool = WorkerPool.new(opts[:workers], @app)
       create_listener
     end
 

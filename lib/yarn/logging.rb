@@ -15,7 +15,7 @@ module Yarn
     end
 
     def debug(msg=nil)
-      log "DEBUG: #{msg || yield}"
+      log "DEBUG: #{msg || yield}" if $debug
     end
 
     def output

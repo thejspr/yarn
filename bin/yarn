@@ -19,6 +19,7 @@ EOS
   opt :host, "Hostname or IP address of the server", :default => "127.0.0.1"
   opt :port, "Port number to listen on for incomming requests", :default => 3000
   opt :workers, "Number of worker threads", :default => 32
+  opt :debug, "Output debug messages"
 end
 
 server = Yarn::Server.new(nil,opts)
