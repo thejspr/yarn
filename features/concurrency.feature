@@ -2,7 +2,7 @@ Feature: Concurrency
 
   As a developer
   I want to be able to serve multiple requests in parallel
-  To increase server throughput
+  To increase server performance
 
   Background:
     Given the server is running
