@@ -4,7 +4,8 @@ module Yarn
 
     def serve_404_page
       @response.status = 404
-      @response.body = ["<html><head><title>404</title></head><body><h1>File: #{@request[:uri][:path]} does not exist.</h1></body><html>"]
+      fn = @request[:uri][:path] if @request
+      @response.body = ["<html><head><title>404</title></head><body><h1>File #{fn} does not exist.</h1></body><html>"]
     end
 
     def serve_500_page
