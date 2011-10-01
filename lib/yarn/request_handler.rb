@@ -74,12 +74,16 @@ module Yarn
     end
 
     def execute_script(path)
-      response = `ruby #{path}`
+      response = `ruby #{path} #{post_body}`
       if !! ($?.to_s =~ /1$/)
         raise ProcessingError
       else
         response
       end
+    end
+
+    def post_body
+      @request ? @request[:body] : ""
     end
 
     def return_response
@@ -103,8 +107,14 @@ module Yarn
     def read_request
       input = []
       while (line = @session.gets) do
-        break if line.length <= 2
-        input << line
+        length = line.gsub(/\D/,"") if line =~ /Content-Length/
+        if line == "\r\n"
+          input << line
+          input << @session.read(length.to_i) unless length
+          break
+        else
+          input << line
+        end
       end
       debug "Done reading request"
       input.join
