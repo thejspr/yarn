@@ -5,7 +5,7 @@ module Yarn
 
     include Logging
 
-    attr_accessor :host, :port, :socket, :socket_listener, :worker_pool
+    attr_accessor :host, :port, :socket
 
     def initialize(app=nil,options={})
       # merge given options with default values
@@ -13,60 +13,38 @@ module Yarn
         output: $stdout, 
         host: '127.0.0.1', 
         port: 3000,
-        workers: 32 
+        workers: 4 
       }.merge(options)
 
       @app = app
-      @host, @port = opts[:host], opts[:port]
+      @host, @port, @num_workers = opts[:host], opts[:port], opts[:workers]
       $output, $debug = opts[:output], opts[:debug]
       @socket = TCPServer.new(@host, @port)
-      @worker_pool = WorkerPool.new(opts[:workers], @app)
-      create_listener
-    end
-
-    def create_listener
-      @threads = []
-      @counter = 0
-      @socket_listener = Thread.new do
-        loop do
-          begin
-            # waits here until a requests comes in
-            session = @socket.accept
-            @threads << Thread.new { 
-              (@app ? RackHandler.new(@app) : RequestHandler.new).run session 
-            }
-            @counter += 1
-            if @counter % 10 == 0
-              debug "Thread count: #{@threads.size}"
-            end
-          rescue Exception => e
-            session.close
-            log e.message
-            log e.backtrace
-          end
-        end
-      end
     end
 
     def start
-      log "Yarn started and accepting requests on #{@host}:#{@port}"
-      begin
-        @socket_listener.join
-      rescue Interrupt => e
-        log "Caught interrupt, stopping..."
-      ensure
-        stop
+      log "Yarn started #{@num_workers} workers and is listening on #{@host}:#{@port}"
+
+      @num_workers.times do
+        fork do
+          trap("INT") { exit }
+          loop do
+            handler ||= @app ? RackHandler.new(@app) : RequestHandler.new
+            session = @socket.accept
+            handler.run session 
+          end
+        end
       end
+
+      # Waits here for all processes to exit
+      Process.waitall
+      stop
     end
 
     def stop
-      @socket.close if @socket
-      @socket = nil
-      @socket_listener.kill if @socket_listener
+      @socket.close unless @socket.closed?
 
-      log "Server stopped"
-      debug "Served #{@counter} requests"
-      debug "#{@threads.collect { |t| t.alive? }.size} live threads"
+      log "Server stopped. Have a nice day!"
     end
   end
 end
