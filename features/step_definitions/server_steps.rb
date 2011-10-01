@@ -36,3 +36,7 @@ end
 Then /^I should see "([^"]*)"$/ do |message|
   $console.contains? message
 end
+
+Then /^Pry$/ do
+  binding.pry
+end
