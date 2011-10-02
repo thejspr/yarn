@@ -116,6 +116,7 @@ module Yarn
           input << line
         end
       end
+      @session.close_read
       debug "Done reading request"
       input.join
     end

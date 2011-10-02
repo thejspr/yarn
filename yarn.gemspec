@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency('parslet', '>= 1.2')
-  s.add_dependency('trollop', '>= 1.16.2')
-  s.add_dependency('rack', '>= 1.3.3')
+  s.add_dependency('trollop', '>= 1.16')
+  s.add_dependency('rack', '>= 1.3')
 
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'faraday'

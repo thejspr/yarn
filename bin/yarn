@@ -9,7 +9,7 @@ require 'yarn'
 opts = Trollop::options do
   version "Yarn v#{Yarn::VERSION} 2011 Jesper Kjeldgaard"
   banner <<-EOS
-Yarn v#{Yarn::VERSION} is a multithreaded webserver written in Ruby 1.9.2
+Yarn v#{Yarn::VERSION} is a multiprocess webserver written in Ruby 1.9.2
 
 Usage: yarn [options]
 where [options] are:
