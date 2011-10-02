@@ -13,7 +13,7 @@ module Yarn
         @server = Server.new(output: $output, debug: true)
         @server.should respond_to(:log)
         @server.should respond_to(:debug)
-        @server.socket.close
+        @server.stop
       end
 
       it "should be available in the handler classes" do

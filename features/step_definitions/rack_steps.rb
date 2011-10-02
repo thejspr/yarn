@@ -5,16 +5,12 @@ Given /^I have a rack application "([^"]*)"$/ do |app|
 end
 
 Given /^the rack test app is running$/ do
-  config_file = File.read("test_objects/config.ru")
-  rack_application = eval("Rack::Builder.new { #{config_file} }")
-  start_server(3000,rack_application)
+  start_server(3000,"test_objects/config.ru")
 end
 
 Given /^the rails test app is running$/ do
   current_dir = Dir.pwd
   Dir.chdir("test_objects/rails_test")
-  config_file = File.read("config.ru")
-  rack_application = eval("Rack::Builder.new { #{config_file} }")
-  start_server(3000,rack_application)
+  start_server(3000,"config.ru")
   Dir.chdir(current_dir)
 end

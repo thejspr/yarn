@@ -26,14 +26,14 @@ module Helpers
 
   def stop_server
     @thread.kill if @thread
-    @server.workers.each { |worker_id| Process.kill("INT", worker_id) } if @server
+    @server.workers.each { |worker_id| Process.kill("INT", worker_id) } if @server and !@server.workers.empty?
     @server.stop if @server
     sleep 0.1 # enable socket to close before next test
   end
 
-  def start_server(port=3000,app=nil)
+  def start_server(port=3000,rack="off")
     $console ||= MockIO.new
-    @server = Yarn::Server.new(app,{ port: port, output: $console, debug: true })
+    @server = Yarn::Server.new({ port: port, output: $console, rack: rack, debug: true })
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created
   end
