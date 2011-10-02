@@ -22,5 +22,5 @@ EOS
   opt :debug, "Output debug messages"
 end
 
-server = Yarn::Server.new(nil,opts)
+server = Yarn::Server.new(opts)
 server.start
