@@ -114,8 +114,9 @@ module Yarn
       it "should parse POST body with added line ending" do
         header = "Cookie: $Version=1; Skin=new;"
         body = "attr=test&attr2=some_other_value&attr3=1231682368125361823"
-        request = "POST /form HTTP/1.1\r\n#{header}\r\n\r\n#{body}\r\n"
+        request = "POST /form HTTP/1.1\r\n#{header}\r\n\r\n#{body}"
         result = @parser.run(request)
+        puts result
         result[:body].should == body
       end
     end

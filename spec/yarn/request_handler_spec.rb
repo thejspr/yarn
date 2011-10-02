@@ -27,7 +27,7 @@ module Yarn
         end
 
         it "should handle POST body" do
-          @req = "POST /app HTTP/1.1\nCookie: key=value\n\nfield1=1&field2=2"
+          @req = "POST /app HTTP/1.1\nCookie: $key=value;\r\n\r\nfield1=1&field2=2"
           @handler.unstub!(:read_request)
           @handler.session = StringIO.new
           @handler.session.string = @req

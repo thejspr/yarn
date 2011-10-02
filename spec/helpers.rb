@@ -19,20 +19,21 @@ module Helpers
     end
   end
 
-  def post(url, params={})
+  def post(url, data)
     setup
-    @connection.post url, params
+    @connection.post url, data
   end
 
   def stop_server
     @thread.kill if @thread
+    @server.workers.each { |worker_id| Process.kill("INT", worker_id) } if @server
     @server.stop if @server
-    Process.kill("TERM",@rack_server) if @rack_server
+    sleep 2
   end
 
-  def start_server(port=3000,opts={})
+  def start_server(port=3000,app=nil)
     $console ||= MockIO.new
-    @server = Yarn::Server.new(nil,{ port: port, output: $console, debug: true })
+    @server = Yarn::Server.new(app,{ port: port, output: $console, debug: true })
     sleep 0.5
     @thread = Thread.new { @server.start }
     sleep 0.1 until @server.socket # wait for socket to be created

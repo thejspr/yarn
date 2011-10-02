@@ -22,4 +22,4 @@ Feature: Static file requests
     Given the file "non-existent-file.html" does not exist
     When I go to "non-existent-file.html"
     Then the response should contain "404"
-    Then the response should contain "File does not exist"
+    Then the response should contain "does not exist"

@@ -83,7 +83,7 @@ module Yarn
     end
 
     def post_body
-      @request ? @request[:body] : ""
+      @request ? @request[:body].to_s : ""
     end
 
     def return_response
@@ -110,7 +110,7 @@ module Yarn
         length = line.gsub(/\D/,"") if line =~ /Content-Length/
         if line == "\r\n"
           input << line
-          input << @session.read(length.to_i) unless length
+          input << @session.read(length.to_i) if length
           break
         else
           input << line
