@@ -5,7 +5,7 @@ module Yarn
 
     include Logging
 
-    attr_accessor :host, :port, :socket
+    attr_accessor :host, :port, :socket, :workers
 
     def initialize(app=nil,options={})
       # merge given options with default values
@@ -20,13 +20,15 @@ module Yarn
       @host, @port, @num_workers = opts[:host], opts[:port], opts[:workers]
       $output, $debug = opts[:output], opts[:debug]
       @socket = TCPServer.new(@host, @port)
+      @workers = []
+      trap("INT") { stop }
     end
 
     def start
       log "Yarn started #{@num_workers} workers and is listening on #{@host}:#{@port}"
 
       @num_workers.times do
-        fork do
+        @workers << fork do
           trap("INT") { exit }
           loop do
             handler ||= @app ? RackHandler.new(@app) : RequestHandler.new
@@ -38,7 +40,6 @@ module Yarn
 
       # Waits here for all processes to exit
       Process.waitall
-      stop
     end
 
     def stop
