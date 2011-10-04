@@ -23,6 +23,8 @@ module Yarn
     end
 
     def make_env
+      input = StringIO.new("").set_encoding(Encoding::ASCII_8BIT)
+      input.string = @request[:body] if @request[:body]
       @env = {
         "REQUEST_METHOD"    => @request[:method].to_s,
         "PATH_INFO"         => @request[:uri][:path].to_s,
@@ -30,10 +32,10 @@ module Yarn
         "SERVER_NAME"       => @request[:uri][:host].to_s,
         "SERVER_PORT"       => @request[:uri][:port].to_s,
         "SCRIPT_NAME"       => "",
-        "rack.input"        => StringIO.new("").set_encoding(Encoding::ASCII_8BIT),
+        "rack.input"        => input,
         "rack.version"      => Rack::VERSION,
         "rack.errors"       => $output,
-        "rack.multithread"  => true,
+        "rack.multithread"  => false,
         "rack.multiprocess" => true,
         "rack.run_once"     => false,
         "rack.url_scheme"   => "http"
