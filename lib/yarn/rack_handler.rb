@@ -7,7 +7,7 @@ module Yarn
     attr_accessor :env
 
     def initialize(app)
-      @parser = ParsletParser.new
+      @parser = Parser.new
       @response = Response.new
       @app = app
     end
