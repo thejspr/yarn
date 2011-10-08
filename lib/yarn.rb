@@ -5,6 +5,7 @@ module Yarn
 
   autoload :Server,           "yarn/server"
   autoload :VERSION,          "yarn/version"
+  autoload :AbstractHandler,  "yarn/abstract_handler"
   autoload :RequestHandler,   "yarn/request_handler"
   autoload :RackHandler,      "yarn/rack_handler"
   autoload :DirectoryLister,  "yarn/directory_lister"

@@ -1,8 +1,7 @@
 require 'rack'
-require 'pry'
 
 module Yarn
-  class RackHandler < RequestHandler
+  class RackHandler < AbstractHandler
 
     attr_accessor :env
 
