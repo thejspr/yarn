@@ -52,15 +52,6 @@ module Yarn
     def prepare_response
     end
 
-    def execute_script(path)
-      response = `ruby #{path} #{post_body}`
-      if !! ($?.to_s =~ /1$/)
-        raise ProcessingError
-      else
-        response
-      end
-    end
-
     def post_body
       @request ? @request[:body].to_s : ""
     end
