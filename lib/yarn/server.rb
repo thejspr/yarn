@@ -19,6 +19,7 @@ module Yarn
 
       @app = nil
       @app = load_rack_app(opts[:rack]) unless opts[:rack] == "off"
+      @opts = opts
 
       @host, @port, @num_workers = opts[:host], opts[:port], opts[:workers]
       @workers = []
@@ -51,7 +52,7 @@ module Yarn
         @workers << fork do
           trap("INT") { exit }
           loop do
-            handler ||= @app ? RackHandler.new(@app) : RequestHandler.new
+            handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
             session = @socket.accept
             handler.run session 
           end

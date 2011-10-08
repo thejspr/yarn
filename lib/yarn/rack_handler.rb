@@ -3,12 +3,13 @@ require 'rack'
 module Yarn
   class RackHandler < AbstractHandler
 
-    attr_accessor :env
+    attr_accessor :env, :opts
 
-    def initialize(app)
+    def initialize(app,opts={})
       @parser = Parser.new
       @response = Response.new
       @app = app
+      @opts = opts
     end
 
     def prepare_response
@@ -23,13 +24,15 @@ module Yarn
 
     def make_env
       input = StringIO.new("").set_encoding(Encoding::ASCII_8BIT)
-      input.string = @request[:body] if @request[:body]
+      if has_body?
+        input.string = @request[:body]
+      end
       @env = {
         "REQUEST_METHOD"    => @request[:method].to_s,
         "PATH_INFO"         => @request[:uri][:path].to_s,
         "QUERY_STRING"      => @request[:uri][:query].to_s,
-        "SERVER_NAME"       => @request[:uri][:host].to_s,
-        "SERVER_PORT"       => @request[:uri][:port].to_s,
+        "SERVER_NAME"       => @opts[:host],
+        "SERVER_PORT"       => @opts[:port].to_s,
         "SCRIPT_NAME"       => "",
         "rack.input"        => input,
         "rack.version"      => Rack::VERSION,
@@ -39,6 +42,14 @@ module Yarn
         "rack.run_once"     => false,
         "rack.url_scheme"   => "http"
       }
+      @env["CONTENT_LENGTH"] = @request[:body].size.to_i if has_body?
+      debug "Rack env: #{@env.to_s}"
+
+      return @env
+    end
+
+    def has_body?
+      !! @request[:body]
     end
 
   end
