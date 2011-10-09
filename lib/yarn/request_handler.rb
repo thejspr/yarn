@@ -6,15 +6,10 @@ module Yarn
       @response.headers["Content-Type"] = "text/html"
 
       begin
-        if File.directory? path
-          serve_directory path
+        if File.directory?(path)
+          serve_directory(path)
         elsif File.exists?(path)
-          if path =~ /.*\.rb$/
-            @response.body << execute_script(path)
-            @response.status = 200
-          else
-            serve_file(path)
-          end
+          path =~ /.*\.rb$/ ? serve_ruby_file(path) : serve_file(path)
         else
           serve_404_page
         end
@@ -25,9 +20,14 @@ module Yarn
     end
 
     def serve_file(path)
-      @response.status = 200
       @response.body << read_file(path)
       @response.headers["Content-Type"] = get_mime_type path
+      @response.status = 200
+    end
+
+    def serve_ruby_file(path)
+      @response.body << execute_script(path)
+      @response.status = 200
     end
 
     def serve_directory(path)

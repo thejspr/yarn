@@ -1,8 +1,8 @@
 Feature: Server control
 
   As a developer
-  I want to be able to command the server
-  So that I can control the server
+  I want to be able to start and stop
+  So that I can serve files to the web
 
   Scenario: Start server
     When I start the server on port 3000
@@ -12,7 +12,3 @@ Feature: Server control
     Given the server is running
     When I stop the server
     Then I should see "Server stopped"
-
-  Scenario: Supply port number when starting the server
-    When I start the server on port 4000
-    Then I should see "Server started on port 4000"
