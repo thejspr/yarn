@@ -4,7 +4,8 @@ module Yarn
   describe RackHandler do
 
     before(:each) do
-      @handler = RackHandler.new(nil,{ host: "www.hostname.com", port: 8888 })
+      @app = mock('app')
+      @handler = RackHandler.new(@app, { host: "www.hostname.com", port: 8888 })
       @handler.request = @handler.parser.run "GET http://www.hostname.com:8888/some_controller/some_action?param1=1&param2=2 HTTP/1.1"
     end
 
