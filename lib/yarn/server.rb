@@ -49,14 +49,20 @@ module Yarn
 
     def init_workers
       @num_workers.times do
-        @workers << fork do
-          trap("INT") { exit }
-          loop do
-            handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
-            session = @socket.accept
-            handler.run session 
-          end
-        end
+        @workers << fork_worker
+      end
+    end
+
+    def fork_worker
+      fork { worker }
+    end
+
+    def worker
+      trap("INT") { exit }
+      loop do
+        handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
+        session = @socket.accept
+        handler.run session 
       end
     end
 

@@ -47,18 +47,6 @@ module Yarn
       end
     end
 
-    # describe "#start" do
-    #   it "should start the socket_listener" do
-    #     @thread = Thread.new do
-    #       @server = Server.new({ output: $console })
-    #       @server.start
-    #     end
-    #     sleep 2
-    #     get("/").should be_true
-    #     @thread.kill
-    #   end
-    # end
-
     describe "#stop" do
       it "should notify the server is stopped" do
         $console = MockIO.new

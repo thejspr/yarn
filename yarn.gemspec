@@ -8,9 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Jesper Kjeldgaard"]
   s.email       = ["jkjeldgaard@gmail.com"]
   s.homepage    = "https://github.com/thejspr/yarn"
-  s.summary     = %q{Multi-threaded webserver for static and dynamic (*.rb) files as well as rack applications.}
-  s.description = %q{A multi-threaded web-server written in Ruby 1.9.}
-
+  s.summary     = %q{Multi-process webserver for static, dynamic (*.rb) files and Rack applications.}
+  s.description = %q{A multi-process web-server written in Ruby 1.9.}
   s.rubyforge_project = "yarn"
 
   s.files         = `git ls-files`.split("\n")
