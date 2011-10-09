@@ -9,7 +9,8 @@ module Yarn
       @parser = Parser.new
       @response = Response.new
       @app = app
-      @opts = opts
+      @host = opts[:host]
+      @port = opts[:port].to_s
     end
 
     def prepare_response
@@ -31,25 +32,25 @@ module Yarn
         "REQUEST_METHOD"    => @request[:method].to_s,
         "PATH_INFO"         => @request[:uri][:path].to_s,
         "QUERY_STRING"      => @request[:uri][:query].to_s,
-        "SERVER_NAME"       => @opts[:host],
-        "SERVER_PORT"       => @opts[:port].to_s,
+        "SERVER_NAME"       => @host,
+        "SERVER_PORT"       => @port,
         "SCRIPT_NAME"       => "",
         "rack.input"        => input,
         "rack.version"      => Rack::VERSION,
         "rack.errors"       => $output,
-        "rack.multithread"  => false,
+        "rack.multithread"  => true,
         "rack.multiprocess" => true,
         "rack.run_once"     => false,
         "rack.url_scheme"   => "http"
       }
       @env["CONTENT_LENGTH"] = @request[:body].size.to_i if has_body?
-      debug "Rack env: #{@env.to_s}"
 
       return @env
     end
 
     def has_body?
-      !! @request[:body]
+      value ||= !! @request[:body]
+      value
     end
 
   end

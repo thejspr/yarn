@@ -32,7 +32,7 @@ module Yarn
       rescue EmptyRequestError
         log "Empty request from #{client_address}"
       ensure
-        close_connection
+        @session.close
         debug "Connection closed"
       end
     end
@@ -62,14 +62,6 @@ module Yarn
       end
     end
 
-    def close_connection
-      if @session #&& !persistent?
-        @session.close
-      else
-        # TODO: start some kind of timeout
-      end
-    end
-
     def read_request
       input = []
       while (line = @session.gets) do
@@ -82,7 +74,7 @@ module Yarn
             input << line
           end
       end
-      @session.close_read
+
       debug "Done reading request"
       input.join
     end
@@ -95,7 +87,7 @@ module Yarn
       @response.headers[:Server] = "Yarn webserver v#{VERSION}"
 
       # HTTP date format: Fri, 31 Dec 1999 23:59:59 GMT
-      time = DateTime.now.new_offset(0)
+      time ||= DateTime.now.new_offset(0)
       @response.headers[:Date] = time.strftime("%a, %d %b %Y %H:%M:%S GMT")
       # Close connection header ( until support for persistent connections )
       @response.headers[:Connection] = "Close"

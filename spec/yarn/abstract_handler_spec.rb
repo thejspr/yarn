@@ -8,11 +8,11 @@ module Yarn
         @dummy_request = "GET /resource/1 HTTP/1.1\r\n "
 
         @session = mock('TCPSocket')
-        @session.stub(:gets).and_return(@dummy_request)
+        @session.stub(:gets)
+        @session.stub(:close)
 
         @handler = AbstractHandler.new
         @handler.session = @session
-        @handler.stub(:debug,:log).and_return(true) #silence output
         @handler.stub(:read_request).and_return(@dummy_request)
       end
 
@@ -81,9 +81,8 @@ module Yarn
           @handler.should_receive(:parse_request).once
           @handler.should_receive(:prepare_response).once
           @handler.should_receive(:return_response).once
-          @handler.should_receive(:close_connection).once
 
-          @handler.run(@dummy_request)
+          @handler.run(@session)
         end
       end
     end

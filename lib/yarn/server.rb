@@ -14,7 +14,7 @@ module Yarn
         host: '127.0.0.1', 
         port: 3000,
         workers: 4,
-        log: false,
+        log: true,
         rack: "off" 
       }.merge(options)
 
@@ -62,9 +62,9 @@ module Yarn
     def worker
       trap("INT") { exit }
       loop do
-        handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
+        @handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
         session = @socket.accept
-        handler.run session 
+        @handler.run session 
       end
     end
 

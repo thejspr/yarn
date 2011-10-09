@@ -17,7 +17,6 @@ module Yarn
       end
 
       after(:each) do
-        @handler.close_connection
         File.delete("index.html") if File.exists?("index.html")
         File.delete("testdir/index.html") if File.exists?("testdir/index.html")
         Dir.delete("testdir") if Dir.exists?("testdir")
