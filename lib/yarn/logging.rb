@@ -1,10 +1,10 @@
-require 'logger'
 require 'date'
 
 module Yarn
   module Logging
 
     def log(msg)
+      return nil unless $log
       if msg.respond_to?(:each)
         msg.each do |line|
           output.puts "#{timestamp} #{line}"
@@ -19,7 +19,8 @@ module Yarn
     end
 
     def output
-      $output || $stdout
+      out ||= $output || $stdout
+      out
     end
 
     def timestamp

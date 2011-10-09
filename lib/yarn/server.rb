@@ -14,6 +14,7 @@ module Yarn
         host: '127.0.0.1', 
         port: 3000,
         workers: 4,
+        log: false,
         rack: "off" 
       }.merge(options)
 
@@ -24,6 +25,7 @@ module Yarn
       @host, @port, @num_workers = opts[:host], opts[:port], opts[:workers]
       @workers = []
       $output, $debug = opts[:output], opts[:debug]
+      $log = opts[:log] || opts[:debug]
     end
 
     def load_rack_app(app_path)
