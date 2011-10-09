@@ -53,13 +53,11 @@ module Yarn
     describe "#parse parameters" do
       it "parses query in the url" do
         result = @parser.run("GET /page?param1=1&param2=2 HTTP/1.1\n")
-        puts result
         result[:uri][:query].should == "param1=1&param2=2"
       end
 
       it "should parse query on rails assets" do
         result = @parser.run("GET assets/application.js?body=0 HTTP/1.1\n")
-        puts result
         result[:uri][:query].should == "body=0"
         result[:uri][:path].should == "assets/application.js"
       end
@@ -116,7 +114,6 @@ module Yarn
         body = "attr=test&attr2=some_other_value&attr3=1231682368125361823"
         request = "POST /form HTTP/1.1\r\n#{header}\r\n\r\n#{body}"
         result = @parser.run(request)
-        puts result
         result[:body].should == body
       end
     end
