@@ -53,12 +53,21 @@ module Yarn
     end
 
     def return_response
-      @session.puts "HTTP/1.1 #{@response.status} #{STATUS_CODES[@response.status]}"
-      @session.puts @response.headers.map { |k,v| "#{k}: #{v}" }
-      @session.puts ""
+      begin
+        @session.puts "HTTP/1.1 #{@response.status} #{STATUS_CODES[@response.status]}"
+        @session.puts @response.headers.map { |k,v| "#{k}: #{v}" }
+        @session.puts ""
 
-      @response.body.each do |line|
-        @session.puts line
+        @response.body.each do |line|
+          @session.puts line
+        end
+      rescue Exception => exception
+        case exception
+        when Errno::ECONNRESET,Errno::ECONNABORTED,Errno::ETIMEDOUT
+          @session.close
+        else
+          raise Exception
+        end
       end
     end
 
