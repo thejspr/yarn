@@ -62,12 +62,7 @@ module Yarn
           @session.puts line
         end
       rescue Exception => exception
-        case exception
-        when Errno::ECONNRESET,Errno::ECONNABORTED,Errno::ETIMEDOUT
-          @session.close
-        else
-          raise Exception
-        end
+        log "An error occured returning the response to the client"
       end
     end
 
@@ -119,7 +114,11 @@ module Yarn
     end
 
     def client_address
-      @session.peeraddr(:numeric)[2] if @session
+      begin
+        @session.peeraddr(:numeric)[2] if @session
+      rescue Errno::ENOTCONN
+        return ""
+      end
     end
   end
 end

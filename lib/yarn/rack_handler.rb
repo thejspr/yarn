@@ -17,6 +17,7 @@ module Yarn
       begin
         make_env
         @response.content = @app.call(@env)
+        @response.body.close if @response.body.respond_to?("close")
       rescue Exception => e
         log e.message
         log e.backtrace
@@ -38,7 +39,7 @@ module Yarn
         "rack.input"        => input,
         "rack.version"      => Rack::VERSION,
         "rack.errors"       => $output,
-        "rack.multithread"  => true,
+        "rack.multithread"  => false,
         "rack.multiprocess" => true,
         "rack.run_once"     => false,
         "rack.url_scheme"   => "http"
@@ -50,7 +51,6 @@ module Yarn
 
     def has_body?
       value ||= !! @request[:body]
-      value
     end
 
   end
