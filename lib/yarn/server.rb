@@ -2,6 +2,15 @@ require 'socket'
 
 module Yarn
   class Server
+    
+    # TCP optimizations
+    TCP_OPTS = [ 
+      # delays accepting connections until clients send data
+      [Socket::SOL_TCP, Socket::Constants::TCP_DEFER_ACCEPT, 1],
+      # send ACK flags in their own packets (faster)
+      [Socket::SOL_TCP, Socket::Constants::TCP_QUICKACK, 1],
+      # set maximum number of
+    ]
 
     include Logging
 
@@ -41,6 +50,7 @@ module Yarn
     def start
       trap("INT") { stop }
       @socket = TCPServer.new(@host, @port)
+      ::BasicSocket.do_not_reverse_lookup=true
       log "Yarn started #{@num_workers} workers and is listening on #{@host}:#{@port}"
 
       init_workers
@@ -49,8 +59,14 @@ module Yarn
       Process.waitall
     end
 
+    def configure_socket
+      TCP_OPTS.each do |opt|
+        @session.setsockopt(*opt)
+      end
+    end
+
     def init_workers
-      @num_workers.times do
+      (@num_workers-1).times do
         @workers << fork_worker
       end
     end
@@ -63,8 +79,9 @@ module Yarn
       trap("INT") { exit }
       loop do
         @handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
-        session = @socket.accept
-        @handler.run session 
+        @session = @socket.accept
+        configure_socket
+        @handler.run @session 
       end
     end
 
