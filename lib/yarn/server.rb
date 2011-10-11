@@ -68,7 +68,7 @@ module Yarn
     end
 
     def init_workers
-      (@num_workers-1).times do
+      [ @num_workers-1, 1 ].max.times do
         @workers << fork_worker
       end
     end
