@@ -1,3 +1,4 @@
 module Yarn
-  VERSION = "0.1.0"
+  # Yarn semantic version
+  VERSION = "0.1.1"
 end

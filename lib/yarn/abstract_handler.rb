@@ -4,9 +4,13 @@ require 'parslet'
 
 module Yarn
 
+  # Error for empty requests.
   class EmptyRequestError < StandardError; end
+  # Error if parsing the request fails.
   class ProcessingError < StandardError; end
 
+  # Base class for the handler classes.
+  # Built using the Template Method design pattern.
   class AbstractHandler
 
     include Logging
@@ -19,6 +23,10 @@ module Yarn
       @response = Response.new
     end
 
+    # The template method which drives the handlers.
+    # Starts by setting common headers and parses the request,
+    # prepares the response, returns it to the client, and closes
+    # the connection.
     def run(session)
       set_common_headers
       @session = session
@@ -37,6 +45,7 @@ module Yarn
       end
     end
 
+    # Invokes the parser upon the request
     def parse_request
       raw_request = read_request
       raise EmptyRequestError if raw_request.empty?
@@ -49,9 +58,11 @@ module Yarn
       end
     end
 
+    # Only implemented in the actual handler classes.
     def prepare_response
     end
 
+    # returns the reqponse by writing it to the socket.
     def return_response
       begin
         @session.puts "HTTP/1.1 #{@response.status} #{STATUS_CODES[@response.status]}"
@@ -66,6 +77,9 @@ module Yarn
       end
     end
 
+    # Reads the request from the socket.
+    # If a Content-Length header is given, that means there is an accompanying
+    # request body. The body is read according to the set Content-Length.
     def read_request
       input = []
       while (line = @session.gets) do
@@ -83,10 +97,7 @@ module Yarn
       input.join
     end
 
-    def persistent?
-      return @request[:headers]["Connection"] == "keep-alive"
-    end
-
+    # Sets common headers like server name and date.
     def set_common_headers
       @response.headers[:Server] = "Yarn webserver v#{VERSION}"
 
@@ -97,6 +108,7 @@ module Yarn
       @response.headers[:Connection] = "Close"
     end
 
+    # Extracts the path from the parsed request
     def extract_path
       path = @request[:uri][:path].to_s
       if path[0] == "/" && path != "/"
@@ -105,14 +117,17 @@ module Yarn
       path.gsub(/%20/, " ").strip
     end
 
+    # Proxy to getting the request body.
     def post_body
       @request ? @request[:body].to_s : ""
     end
 
+    # Proxy for getting the request path.
     def request_path
       @request[:uri][:path] if @request
     end
 
+    # Proxy for the clients address.
     def client_address
       begin
         @session.peeraddr(:numeric)[2] if @session

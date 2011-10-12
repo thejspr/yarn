@@ -30,7 +30,7 @@ module Yarn
 
       it "should return a rack app if the file exists" do
         app = @server.load_rack_app("test_objects/config.ru")
-        app.class.should == Rack::Builder
+        app.class.should == Proc
       end
     end
 

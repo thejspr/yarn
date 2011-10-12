@@ -9,3 +9,4 @@ pkg/*
 doc/*
 .rvmrc
 .rbx/
+.yardoc/

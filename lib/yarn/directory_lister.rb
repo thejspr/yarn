@@ -1,10 +1,10 @@
-require 'yarn/logging'
-
 module Yarn
+  # Creates directory listings in HTML
   class DirectoryLister
 
     include Logging
 
+    # Creates a directory listing for the given path.
     def self.list(path)
       response = []
       response << <<-EOS
@@ -49,6 +49,7 @@ module Yarn
       return response
     end
 
+    # Formats file sizes into more readable formats.
     def self.format_size(size)
       count = 0
       while  size >= 1024 and count < 4

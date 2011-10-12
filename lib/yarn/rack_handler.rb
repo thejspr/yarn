@@ -1,6 +1,7 @@
 require 'rack'
 
 module Yarn
+  # handler for Rack applications.
   class RackHandler < AbstractHandler
 
     attr_accessor :env, :opts
@@ -13,6 +14,7 @@ module Yarn
       @port = opts[:port].to_s
     end
 
+    # Prepares the response by setting the environment and calling the Rack app.
     def prepare_response
       begin
         make_env
@@ -24,6 +26,7 @@ module Yarn
       end
     end
 
+    # Creates and formats the Rack environment.
     def make_env
       input = StringIO.new("").set_encoding(Encoding::ASCII_8BIT)
       if has_body?
@@ -49,6 +52,7 @@ module Yarn
       return @env
     end
 
+    # Proxy for whether the request has body data.
     def has_body?
       value ||= !! @request[:body]
     end

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'parslet'
 
 module Yarn
+  # LPEG style HTTP parser.
   class Parser < Parslet::Parser
     
     # general rules
@@ -81,12 +82,14 @@ module Yarn
     # starts parsing from the beginning using the :request rule
     root(:request)
 
+    # Executes the parser on a given input string.
     def run(input)
       tree = parse input 
       HeadersTransformer.new.apply tree 
     end
   end
 
+  # Formats the headers into a Hash with the header-name as the key.
   class HeadersTransformer < Parslet::Transform
     rule(:_process_headers => subtree(:headers)) do
       hash = {}

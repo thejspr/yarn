@@ -5,18 +5,24 @@ require "yarn/version"
 Gem::Specification.new do |s|
   s.name        = "yarn"
   s.version     = Yarn::VERSION
-  s.authors     = ["Jesper Kjeldgaard"]
-  s.email       = ["jkjeldgaard@gmail.com"]
-  s.homepage    = "https://github.com/thejspr/yarn"
+  s.date        = Time.now.strftime('%Y-%m-%d')
+
   s.summary     = %q{Multi-process webserver for static, dynamic (*.rb) files and Rack applications.}
   s.description = %q{A multi-process web-server written in Ruby 1.9.}
-  s.rubyforge_project = "yarn"
 
-  s.files         = `git ls-files`.split("\n")
+  s.authors     = ["Jesper Kjeldgaard"]
+  s.email       = ["thejspr@gmail.com"]
+  s.homepage    = "https://github.com/thejspr/yarn"
+
+  s.has_rdoc      = 'yard'
+
+  s.files         = Dir['{bin,lib}/**/*', 'README.md', 'LICENSE'] & `git ls-files -z`.split("\0")
   s.test_files    = `git ls-files -- {test,spec,features,test_objects}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ["lib"]
+  s.executables   = ["yarn"]
+  s.require_path  = "lib"
   
+  s.rubyforge_project = s.name
+
   s.add_dependency('parslet', '>= 1.2')
   s.add_dependency('trollop', '>= 1.16')
   s.add_dependency('rack', '>= 1.3')

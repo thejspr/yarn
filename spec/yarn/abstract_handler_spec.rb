@@ -61,20 +61,6 @@ module Yarn
         end
       end
 
-      describe "#persistent?" do
-        it "should return true if the Connection header is set to keep-alive" do
-          @handler.request = { headers: { "Connection" => "keep-alive" } }
-
-          @handler.persistent?.should be_true
-        end
-
-        it "should return false if the Connection header is set to close" do
-          @handler.request = { headers: { "Connection" => "close" } }
-
-          @handler.persistent?.should be_false
-        end
-      end
-
       describe "#run" do
         it "should call all relevant template methods" do
           @handler.stub(:client_address)
