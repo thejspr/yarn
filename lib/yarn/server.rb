@@ -62,15 +62,11 @@ module Yarn
     end
 
     def configure_socket
-      TCP_OPTS.each do |opt|
-        @session.setsockopt(*opt)
-      end
+      TCP_OPTS.each { |opt| @session.setsockopt(*opt) }
     end
 
     def init_workers
-      @num_workers.times do
-        @workers << fork_worker
-      end
+      @num_workers.times { @workers << fork_worker }
     end
 
     def fork_worker
@@ -79,12 +75,16 @@ module Yarn
 
     def worker
       trap("INT") { exit }
+      handler = get_handler
       loop do
-        @handler ||= @app ? RackHandler.new(@app,@opts) : RequestHandler.new
         @session = @socket.accept
         configure_socket
-        @handler.run @session
+        handler.run @session
       end
+    end
+
+    def get_handler
+      @app ? RackHandler.new(@app,@opts) : RequestHandler.new
     end
 
     def stop

@@ -85,8 +85,14 @@ module Yarn
           @handler.run(@session)
         end
       end
+
+      describe "#client_address" do
+        it "should return the clients address" do
+          @handler.session.stub(:peeraddr).and_return([nil,nil,"some_host"])
+
+          @handler.client_address.should == "some_host"
+        end
+      end 
     end
-
-
   end
 end

@@ -8,6 +8,11 @@ module Yarn
     end
 
     describe "#new" do
+      it "should set the app if parameter is given" do
+        @server = Server.new({ rack: "test_objects/config.ru" })
+
+        @server.instance_variable_get("@app").should_not be_nil
+      end
     end
 
     describe "#load_rack_app" do
@@ -44,6 +49,40 @@ module Yarn
         @server.start
 
         @server.socket.addr.should include(4000)
+      end
+    end
+
+    describe "#worker" do
+      it "should start the handler" do
+        # modify loop to only run once
+        class Yarn::Server
+          private
+          def loop
+            yield
+          end
+        end
+        @server = Server.new
+        @server.stub(:init_workers)
+        @server.stub(:configure_socket)
+        @server.socket.stub(:accept).and_return("GET / HTTP/1.1")
+
+        RequestHandler.any_instance.should_receive(:run)
+
+        @server.worker
+      end
+    end
+
+    describe "#get_handler" do
+      it "should return the RequestHandler if an app is not given" do
+        @server = Server.new
+
+        @server.get_handler.class.should == RequestHandler
+      end
+
+      it "should return the Rackhandler if an app is given" do
+        @server = Server.new(rack: "test_objects/config.ru")
+
+        @server.get_handler.class.should == RackHandler
       end
     end
 
