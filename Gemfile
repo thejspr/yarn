@@ -5,3 +5,5 @@ gemspec
 
 gem 'autotest'
 gem 'pry'
+gem 'capybara'
+gem 'capybara-webkit'
