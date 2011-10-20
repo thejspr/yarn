@@ -16,7 +16,7 @@ where [options] are:
 EOS
 
   opt :host, "Hostname or IP address of the server", :default => "127.0.0.1"
-  opt :port, "Port number to listen on for incomming requests", :default => 3000
+  opt :port, "Port number to listen on for incoming requests", :default => 3000
   opt :workers, "Number of worker threads", :default => 4
   opt :rack, "Rackup file <config.ru>", :default => "off"
   opt :log, "Enable logging", :default => false
