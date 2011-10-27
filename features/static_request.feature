@@ -17,9 +17,3 @@ Feature: Static file requests
     When I go to "/jquery.js"
     Then the response should contain "jQuery JavaScript Library"
     And the response should contain "})(window);"
-
-  Scenario: Show an error message if a resource doesnt exist
-    Given the file "non-existent-file.html" does not exist
-    When I go to "non-existent-file.html"
-    Then the response should contain "404"
-    Then the response should contain "does not exist"

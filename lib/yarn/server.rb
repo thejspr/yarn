@@ -13,8 +13,7 @@ module Yarn
       # delays accepting connections until clients send data
       [Socket::SOL_TCP, TCP_DEFER_ACCEPT, 1],
       # send ACK flags in their own packets (faster)
-      [Socket::SOL_TCP, TCP_QUICKACK, 1],
-      # set maximum number of
+      [Socket::SOL_TCP, TCP_QUICKACK, 1]
     ]
 
     attr_accessor :host, :port, :socket, :workers
@@ -31,18 +30,18 @@ module Yarn
         rack: "off" 
       }.merge(options)
 
-      @app = opts[:rack] == "off" ? nil : load_rack_app(opts[:rack])
-      @opts = opts
-
+			@opts = opts
       @host, @port, @num_workers = opts[:host], opts[:port], opts[:workers]
       @workers = []
       $output, $debug = opts[:output], opts[:debug]
       $log = opts[:log] || opts[:debug]
+			@app = opts[:rack] == "off" ? StaticApp.new : load_rack_app(opts[:rack])
     end
 
     # Loads a Rack application from a given file path.
     # If the file does not exist, the program exits.
     def load_rack_app(app_path)
+			log "Serving Rack application: #{app_path}"
       if File.exists?(app_path)
         config_file = File.read(app_path)
         rack_application = eval("Rack::Builder.new { #{config_file} }.to_app", TOPLEVEL_BINDING, app_path)
@@ -86,17 +85,12 @@ module Yarn
     # requests. Upon receiving a request, it fires the run method on the handler.
     def worker
       trap("INT") { exit }
-      handler = get_handler
+      handler = RackHandler.new(@app,@opts)
       loop do
         @session = @socket.accept
         configure_socket
         handler.run @session
       end
-    end
-
-    # Returns the handler corresponding to whether a Rack application is present.
-    def get_handler
-      @app ? RackHandler.new(@app,@opts) : RequestHandler.new
     end
 
     # Closes the TCPServer and exits with a message.

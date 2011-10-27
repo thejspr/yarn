@@ -16,8 +16,8 @@ module Yarn
         @server.stop
       end
 
-      it "should be available in the handler classes" do
-        @handler = RequestHandler.new
+      it "should be available in the handler class" do
+        @handler = RackHandler.new(nil,{})
 
         @handler.should respond_to(:log)
         @handler.should respond_to(:debug)

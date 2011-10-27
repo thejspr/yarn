@@ -66,23 +66,9 @@ module Yarn
         @server.stub(:configure_socket)
         @server.socket.stub(:accept).and_return("GET / HTTP/1.1")
 
-        RequestHandler.any_instance.should_receive(:run)
+        RackHandler.any_instance.should_receive(:run)
 
         @server.worker
-      end
-    end
-
-    describe "#get_handler" do
-      it "should return the RequestHandler if an app is not given" do
-        @server = Server.new
-
-        @server.get_handler.class.should == RequestHandler
-      end
-
-      it "should return the Rackhandler if an app is given" do
-        @server = Server.new(rack: "test_objects/config.ru")
-
-        @server.get_handler.class.should == RackHandler
       end
     end
 

@@ -70,7 +70,8 @@ module Yarn
         @session.puts ""
 
         @response.body.each do |line|
-          @session.puts line
+          @session.write line
+					@session.flush
         end
       rescue Exception => exception
         log "An error occured returning the response to the client"
