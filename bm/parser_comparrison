@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'benchmark'
+require 'yarn'
+require 'thin'
+
+cookie = "Cookie: $Version=1; Skin=new;"
+user_agent_value = "Mozilla/5.0 Windows NT 6.1; WOW64; Trident/5.0)"
+user_agent = "User-Agent: #{user_agent_value}"
+request = "POST /form/at/company.rb HTTP/1.1\r\n#{cookie}\r\n#{user_agent}\r\n"
+request.freeze
+
+yarn_parser = Yarn::Parser.new
+thin_parser = Thin::Request.new
+
+n = ARGV[0].to_i
+
+Benchmark.bm(7) do |x|
+  x.report("Yarn") { n.times { yarn_parser.parse(request) } }
+  x.report("Thin") { n.times { Thin::Request.new.parse(request) } }
+end
